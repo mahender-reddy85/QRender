@@ -30,9 +30,7 @@ export default async function HomePage() {
         <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
           Create, customize, and manage your QR codes instantly.
         </p>
-        <div className="mt-6">
-          <MobileHeader userId={userId} />
-        </div>
+        <MobileHeader userId={userId} />
       </section>
 
       <QRCodeGeneratorWrapper isUserLoggedIn={!!userId} />

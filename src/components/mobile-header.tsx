@@ -15,7 +15,7 @@ export function MobileHeader({ userId }: MobileHeaderProps) {
   if (!isMobile) return null;
 
   return (
-    <div className="flex items-center justify-center space-x-4">
+    <div className="mt-6 flex items-center justify-center space-x-4">
       <ThemeToggle />
       {!userId && (
         <div className="flex items-center space-x-2">

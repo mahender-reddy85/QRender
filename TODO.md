@@ -12,6 +12,13 @@
 - [x] No duplicates found in codebase
 - [x] Removed temp.html file
 
+## User Requests
+- [x] Change redirect after login/signup to home page instead of dashboard
+- [x] Move theme toggle and login/signup buttons up in mobile view
+
+## Unwanted Files
+- [x] Remove temp.html
+
 ## Followup
 - [x] Test the app to ensure fixes work correctly - App started successfully on http://localhost:9002
 - [x] Set up MySQL database with Prisma instead of SQLite

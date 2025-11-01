@@ -54,7 +54,7 @@ export async function login(state: AuthState | null, formData: FormData): Promis
     }
     return { message: 'An unknown error occurred.' };
   }
-  redirect('/dashboard');
+  redirect('/');
 }
 
 export async function register(state: AuthState | null, formData: FormData): Promise<AuthState> {
@@ -82,7 +82,7 @@ export async function register(state: AuthState | null, formData: FormData): Pro
         }
         return { message: 'An unknown error occurred.' };
     }
-    redirect('/dashboard');
+    redirect('/');
 }
 
 export async function logout() {

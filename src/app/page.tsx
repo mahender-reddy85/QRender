@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { getSessionUserId } from "@/lib/auth";
 import { QRCodeGeneratorWrapper } from "@/components/qr-code-generator-wrapper";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { MobileHeader, MobileAuthButtons } from "@/components/mobile-header";
 
 export default async function HomePage() {
   const userId = await getSessionUserId();
@@ -11,11 +11,11 @@ export default async function HomePage() {
   return (
     <main className="container flex-1 py-0 border-0">
       <section className="relative text-center">
-        <div className={`absolute left-0 ${useIsMobile() ? '-top-10' : 'top-0'}`}>
+        <div className="absolute left-0 top-0">
           <ThemeToggle />
         </div>
         {!userId && (
-          <div className={`absolute right-0 flex items-center space-x-2 ${useIsMobile() ? '-top-10' : 'top-0'}`}>
+          <div className="absolute right-0 flex items-center space-x-2 top-0">
             <Button asChild variant="ghost" size="sm">
               <Link href="/login">Log In</Link>
             </Button>
@@ -24,6 +24,8 @@ export default async function HomePage() {
             </Button>
           </div>
         )}
+        <MobileHeader userId={userId} />
+        <MobileAuthButtons userId={userId} />
         <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent mb-4">
           QRender
         </h1>

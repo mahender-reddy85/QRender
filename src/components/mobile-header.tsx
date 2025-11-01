@@ -14,22 +14,24 @@ export function MobileHeader({ userId }: MobileHeaderProps) {
 
   if (!isMobile) return null;
 
-  return <ThemeToggle />;
+  return (
+    <div className="flex items-center justify-center space-x-4">
+      <ThemeToggle />
+      {!userId && (
+        <div className="flex items-center space-x-2">
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/login">Log In</Link>
+          </Button>
+          <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90" size="sm">
+            <Link href="/register">Sign Up</Link>
+          </Button>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export function MobileAuthButtons({ userId }: MobileHeaderProps) {
-  const isMobile = useIsMobile();
-
-  if (!isMobile || userId) return null;
-
-  return (
-    <div className="flex items-center space-x-2">
-      <Button asChild variant="ghost" size="sm">
-        <Link href="/login">Log In</Link>
-      </Button>
-      <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90" size="sm">
-        <Link href="/register">Sign Up</Link>
-      </Button>
-    </div>
-  );
+  // This component is no longer needed as we combined everything in MobileHeader
+  return null;
 }

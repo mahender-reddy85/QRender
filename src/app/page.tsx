@@ -30,9 +30,8 @@ export default async function HomePage() {
         <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
           Create, customize, and manage your QR codes instantly.
         </p>
-        <div className="mt-6 flex justify-center items-center space-x-4">
+        <div className="mt-6">
           <MobileHeader userId={userId} />
-          {!userId && <MobileAuthButtons userId={userId} />}
         </div>
       </section>
 

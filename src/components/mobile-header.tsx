@@ -14,11 +14,7 @@ export function MobileHeader({ userId }: MobileHeaderProps) {
 
   if (!isMobile) return null;
 
-  return (
-    <div className="absolute left-0 -top-10">
-      <ThemeToggle />
-    </div>
-  );
+  return <ThemeToggle />;
 }
 
 export function MobileAuthButtons({ userId }: MobileHeaderProps) {
@@ -27,7 +23,7 @@ export function MobileAuthButtons({ userId }: MobileHeaderProps) {
   if (!isMobile || userId) return null;
 
   return (
-    <div className="absolute right-0 flex items-center space-x-2 -top-10">
+    <div className="flex items-center space-x-2">
       <Button asChild variant="ghost" size="sm">
         <Link href="/login">Log In</Link>
       </Button>

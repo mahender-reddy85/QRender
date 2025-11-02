@@ -390,8 +390,8 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
                                                         endpoint="pdfUploader"
                                                         onClientUploadComplete={(res) => {
                                                             if (res && res[0]) {
-                                                                alert(`File uploaded successfully: ${res[0].url}`);
-                                                                // You can now generate QR code from res[0].url
+                                                                alert(`File uploaded successfully: ${res[0].ufsUrl}`);
+                                                                // You can now generate QR code from res[0].ufsUrl
                                                             }
                                                         }}
                                                         onUploadError={(error) => {
@@ -470,8 +470,8 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
                                                         endpoint="videoUploader"
                                                         onClientUploadComplete={(res) => {
                                                             if (res && res[0]) {
-                                                                alert(`File uploaded successfully: ${res[0].url}`);
-                                                                // You can now generate QR code from res[0].url
+                                                                alert(`File uploaded successfully: ${res[0].ufsUrl}`);
+                                                                // You can now generate QR code from res[0].ufsUrl
                                                             }
                                                         }}
                                                         onUploadError={(error) => {
@@ -490,8 +490,8 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
                                                         endpoint="musicUploader"
                                                         onClientUploadComplete={(res) => {
                                                             if (res && res[0]) {
-                                                                alert(`File uploaded successfully: ${res[0].url}`);
-                                                                // You can now generate QR code from res[0].url
+                                                                alert(`File uploaded successfully: ${res[0].ufsUrl}`);
+                                                                // You can now generate QR code from res[0].ufsUrl
                                                             }
                                                         }}
                                                         onUploadError={(error) => {
@@ -510,8 +510,8 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
                                                         endpoint="imageUploader"
                                                         onClientUploadComplete={(res) => {
                                                             if (res && res[0]) {
-                                                                alert(`File uploaded successfully: ${res[0].url}`);
-                                                                // You can now generate QR code from res[0].url
+                                                                alert(`File uploaded successfully: ${res[0].ufsUrl}`);
+                                                                // You can now generate QR code from res[0].ufsUrl
                                                             }
                                                         }}
                                                         onUploadError={(error) => {

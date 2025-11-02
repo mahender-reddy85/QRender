@@ -44,7 +44,11 @@ export function HistoryClient({ initialHistory }: { initialHistory: QRCodeData[]
           <DialogTrigger asChild>
             <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
               <CardHeader>
-                <CardTitle className="truncate text-lg">{item.text}</CardTitle>
+                <CardTitle className="text-lg">
+                  <span className="block truncate" title={item.text}>
+                    {item.text.length > 30 ? `${item.text.slice(0, 30)}...` : item.text}
+                  </span>
+                </CardTitle>
                 <CardDescription>
                   {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
                 </CardDescription>
@@ -107,7 +111,11 @@ export function HistoryClient({ initialHistory }: { initialHistory: QRCodeData[]
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-                <DialogTitle className="truncate">{item.text}</DialogTitle>
+                <DialogTitle>
+                  <span className="block truncate" title={item.text}>
+                    {item.text}
+                  </span>
+                </DialogTitle>
             </DialogHeader>
             <QRCodeDisplay imageUrl={constructQrUrl(item)} text={item.text} />
           </DialogContent>

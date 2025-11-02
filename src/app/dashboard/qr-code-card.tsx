@@ -40,7 +40,7 @@ export function QRCodeCard({ qr }: { qr: QRCodeData }) {
       <CardHeader>
         <div className="flex justify-between items-start">
           <div className="flex-1">
-            <CardTitle className="text-lg">{qr.text.length > 15 ? `${qr.text.slice(0, 15)}...` : qr.text}</CardTitle>
+            <CardTitle className="text-lg">{qr.text.length > 25 ? `${qr.text.slice(0, 25)}...` : qr.text}</CardTitle>
             <p className="text-sm text-muted-foreground mt-1">
               Created: {format(new Date(qr.createdAt), 'MMM dd, yyyy')}
             </p>

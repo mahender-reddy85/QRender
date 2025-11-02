@@ -287,14 +287,11 @@ export async function generateQrCode(prevState: QRState, formData: FormData): Pr
             };
         }
 
-        const { color, frame, logoUrl, shape } = validatedFields.data;
+        const { color, frame, shape } = validatedFields.data;
         const colorHex = color.substring(1); // Remove '#'
 
         // Build QR API URL with customizations
         let qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrContent)}&size=250x250&color=${colorHex}&bgcolor=F0F0F0`;
-        if (logoUrl) {
-            qrApiUrl += `&logo=${encodeURIComponent(logoUrl)}`;
-        }
 
         const userId = await getSessionUserId();
         if (userId) {

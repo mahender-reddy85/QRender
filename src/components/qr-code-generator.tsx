@@ -594,6 +594,12 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
                        {state.qrImageUrl ? (
                             <div className="flex flex-col h-full">
                 <QRCodeDisplay imageUrl={state.qrImageUrl} text={state.text || 'qrcode'}/>
+                                <div className="p-6 pt-0">
+                                    <Button onClick={handleReset} variant="outline" className="w-full">
+                                        <RotateCcw className="mr-2 h-4 w-4"/>
+                                        Create Another
+                                    </Button>
+                                </div>
                             </div>
                         ) : (
                             // This is shown briefly during flip-back

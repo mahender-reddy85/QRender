@@ -1,12 +1,12 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { QRCodeGeneratorWrapper } from "@/components/qr-code-generator-wrapper";
-import { useEffect, useState } from "react";
+import { getSessionUserId } from "@/lib/auth";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const userId = await getSessionUserId();
+
   return (
     <main className="container flex-1 py-0 border-0">
       <section className="relative text-center">
@@ -18,10 +18,20 @@ export default function HomePage() {
         </p>
         <div className="mt-6 flex items-center justify-center space-x-4">
           <ThemeToggle />
+          {!userId && (
+            <div className="flex items-center space-x-2">
+              <Button asChild variant="ghost" size="sm">
+                <Link href="/login">Log In</Link>
+              </Button>
+              <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90" size="sm">
+                <Link href="/register">Sign Up</Link>
+              </Button>
+            </div>
+          )}
         </div>
       </section>
 
-      <QRCodeGeneratorWrapper isUserLoggedIn={false} />
+      <QRCodeGeneratorWrapper isUserLoggedIn={!!userId} />
     </main>
   );
 }

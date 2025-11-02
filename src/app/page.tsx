@@ -24,20 +24,6 @@ export default function HomePage() {
   return (
     <main className="container flex-1 py-0 border-0">
       <section className="relative text-center">
-        {!isMobile && (
-          <>
-            {!userId && (
-              <div className="absolute right-0 flex items-center space-x-2 top-0">
-                <Button asChild variant="ghost" size="sm">
-                  <Link href="/login">Log In</Link>
-                </Button>
-                <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90" size="sm">
-                  <Link href="/register">Sign Up</Link>
-                </Button>
-              </div>
-            )}
-          </>
-        )}
         <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent mb-4">
           QRender
         </h1>

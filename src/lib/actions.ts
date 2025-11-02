@@ -134,36 +134,22 @@ const WifiSchema = BaseQRFormSchema.extend({
     encryption: z.enum(['WPA', 'WEP', 'nopass']),
 });
 const PDFSchema = BaseQRFormSchema.extend({
-    pdfFile: z.any().refine((file) => file && file.size > 0, {
-        message: "PDF file is required.",
-    }),
+    pdfFile: z.instanceof(File).refine((file) => file.size > 0, 'PDF file is required.'),
 });
 const LocationSchema = BaseQRFormSchema.extend({
     latitude: z.coerce.number(),
     longitude: z.coerce.number(),
 });
 const VideoSchema = BaseQRFormSchema.extend({
-    videoUrl: z.string().url('Please enter a valid video URL.').optional().or(z.literal('')),
-    videoFile: z.any().optional(),
-}).refine((data) => data.videoUrl || data.videoFile, {
-    message: "Either video URL or video file is required.",
-    path: ["videoUrl"],
+    videoFile: z.instanceof(File).refine((file) => file.size > 0, 'Video file is required.'),
 });
 
 const MusicSchema = BaseQRFormSchema.extend({
-    musicUrl: z.string().url('Please enter a valid music URL.').optional().or(z.literal('')),
-    musicFile: z.any().optional(),
-}).refine((data) => data.musicUrl || data.musicFile, {
-    message: "Either music URL or music file is required.",
-    path: ["musicUrl"],
+    musicFile: z.instanceof(File).refine((file) => file.size > 0, 'Music file is required.'),
 });
 
 const ImageSchema = BaseQRFormSchema.extend({
-    imageUrl: z.string().url('Please enter a valid image URL.').optional().or(z.literal('')),
-    imageFile: z.any().optional(),
-}).refine((data) => data.imageUrl || data.imageFile, {
-    message: "Either image URL or image file is required.",
-    path: ["imageUrl"],
+    imageFile: z.instanceof(File).refine((file) => file.size > 0, 'Image file is required.'),
 });
 
 import { QRState } from './definitions';
@@ -244,8 +230,14 @@ export async function generateQrCode(prevState: QRState, formData: FormData): Pr
         case 'pdf':
             validatedFields = PDFSchema.safeParse(data);
             if (validatedFields.success) {
-                qrContent = 'PDF File';
-                displayText = 'PDF Document';
+                const file = validatedFields.data.pdfFile;
+                const buffer = Buffer.from(await file.arrayBuffer());
+                const fileName = `${Date.now()}-${file.name}`;
+                const filePath = path.join(process.cwd(), 'public', 'uploads', fileName);
+                fs.mkdirSync(path.dirname(filePath), { recursive: true });
+                fs.writeFileSync(filePath, buffer);
+                qrContent = `/uploads/${fileName}`;
+                displayText = file.name;
             }
             break;
         case 'location':
@@ -259,58 +251,40 @@ export async function generateQrCode(prevState: QRState, formData: FormData): Pr
         case 'video':
             validatedFields = VideoSchema.safeParse(data);
             if (validatedFields.success) {
-                if (validatedFields.data.videoUrl) {
-                    qrContent = validatedFields.data.videoUrl;
-                    displayText = 'Video';
-                } else if (validatedFields.data.videoFile) {
-                    // Handle file upload
-                    const file = validatedFields.data.videoFile as File;
-                    const buffer = Buffer.from(await file.arrayBuffer());
-                    const fileName = `${Date.now()}-${file.name}`;
-                    const filePath = path.join(process.cwd(), 'public', 'uploads', fileName);
-                    fs.mkdirSync(path.dirname(filePath), { recursive: true });
-                    fs.writeFileSync(filePath, buffer);
-                    qrContent = `/uploads/${fileName}`;
-                    displayText = file.name;
-                }
+                const file = validatedFields.data.videoFile;
+                const buffer = Buffer.from(await file.arrayBuffer());
+                const fileName = `${Date.now()}-${file.name}`;
+                const filePath = path.join(process.cwd(), 'public', 'uploads', fileName);
+                fs.mkdirSync(path.dirname(filePath), { recursive: true });
+                fs.writeFileSync(filePath, buffer);
+                qrContent = `/uploads/${fileName}`;
+                displayText = file.name;
             }
             break;
         case 'music':
             validatedFields = MusicSchema.safeParse(data);
             if (validatedFields.success) {
-                if (validatedFields.data.musicUrl) {
-                    qrContent = validatedFields.data.musicUrl;
-                    displayText = 'Music';
-                } else if (validatedFields.data.musicFile) {
-                    // Handle file upload
-                    const file = validatedFields.data.musicFile as File;
-                    const buffer = Buffer.from(await file.arrayBuffer());
-                    const fileName = `${Date.now()}-${file.name}`;
-                    const filePath = path.join(process.cwd(), 'public', 'uploads', fileName);
-                    fs.mkdirSync(path.dirname(filePath), { recursive: true });
-                    fs.writeFileSync(filePath, buffer);
-                    qrContent = `/uploads/${fileName}`;
-                    displayText = file.name;
-                }
+                const file = validatedFields.data.musicFile;
+                const buffer = Buffer.from(await file.arrayBuffer());
+                const fileName = `${Date.now()}-${file.name}`;
+                const filePath = path.join(process.cwd(), 'public', 'uploads', fileName);
+                fs.mkdirSync(path.dirname(filePath), { recursive: true });
+                fs.writeFileSync(filePath, buffer);
+                qrContent = `/uploads/${fileName}`;
+                displayText = file.name;
             }
             break;
         case 'image':
             validatedFields = ImageSchema.safeParse(data);
             if (validatedFields.success) {
-                if (validatedFields.data.imageUrl) {
-                    qrContent = validatedFields.data.imageUrl;
-                    displayText = 'Image';
-                } else if (validatedFields.data.imageFile) {
-                    // Handle file upload
-                    const file = validatedFields.data.imageFile as File;
-                    const buffer = Buffer.from(await file.arrayBuffer());
-                    const fileName = `${Date.now()}-${file.name}`;
-                    const filePath = path.join(process.cwd(), 'public', 'uploads', fileName);
-                    fs.mkdirSync(path.dirname(filePath), { recursive: true });
-                    fs.writeFileSync(filePath, buffer);
-                    qrContent = `/uploads/${fileName}`;
-                    displayText = file.name;
-                }
+                const file = validatedFields.data.imageFile;
+                const buffer = Buffer.from(await file.arrayBuffer());
+                const fileName = `${Date.now()}-${file.name}`;
+                const filePath = path.join(process.cwd(), 'public', 'uploads', fileName);
+                fs.mkdirSync(path.dirname(filePath), { recursive: true });
+                fs.writeFileSync(filePath, buffer);
+                qrContent = `/uploads/${fileName}`;
+                displayText = file.name;
             }
             break;
             default:

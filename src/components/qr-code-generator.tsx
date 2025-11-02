@@ -38,7 +38,6 @@ function SubmitButton() {
 
 const QRForm = ({ type, children }: { type: string, children: React.ReactNode}) => {
     const [color, setColor] = useState('#000000');
-    const [frame, setFrame] = useState('none');
 
     return (
         <div className="space-y-6">
@@ -60,27 +59,7 @@ const QRForm = ({ type, children }: { type: string, children: React.ReactNode}) 
                 </div>
             </div>
 
-            <div className="space-y-4">
-                <div className="space-y-2">
-                    <Label htmlFor="frame">Frame</Label>
-                    <Select name="frame" value={frame} onValueChange={setFrame}>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select a frame" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="none">No Frame</SelectItem>
-                            <SelectItem value="bubble-top">Bubble frame with scan me text at the top</SelectItem>
-                            <SelectItem value="bubble-bottom">Bubble frame with scan me text at the bottom</SelectItem>
-                            <SelectItem value="envelope">Envelope frame with scan me text</SelectItem>
-                            <SelectItem value="arrow">Scan me text under a QR Code with an arrow pointing to it</SelectItem>
-                            <SelectItem value="outline">Scan me text under a QR Code with a black outline</SelectItem>
-                            <SelectItem value="shopping-bag">Shopping bag frame with scan me text</SelectItem>
-                            <SelectItem value="banner">Banner frame with scan me text at the bottom</SelectItem>
-                            <SelectItem value="video-play">Frame with video play button and scan me text</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-            </div>
+
 
             <div className="space-y-4">
                 <div className="space-y-2">
@@ -627,7 +606,7 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
                     <div className="w-full h-full">
                        {state.qrImageUrl ? (
                             <div className="flex flex-col h-full">
-                <QRCodeDisplay imageUrl={state.qrImageUrl} text={state.text || 'qrcode'} frame={state.frame || undefined} shape={state.shape || undefined}/>
+                <QRCodeDisplay imageUrl={state.qrImageUrl} text={state.text || 'qrcode'} shape={state.shape || undefined}/>
                                 <div className="p-6 pt-0">
                                     <Button onClick={handleReset} variant="outline" className="w-full">
                                         <RotateCcw className="mr-2 h-4 w-4"/>

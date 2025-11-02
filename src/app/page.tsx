@@ -26,9 +26,6 @@ export default function HomePage() {
       <section className="relative text-center">
         {!isMobile && (
           <>
-            <div className="absolute left-0 top-0">
-              <ThemeToggle />
-            </div>
             {!userId && (
               <div className="absolute right-0 flex items-center space-x-2 top-0">
                 <Button asChild variant="ghost" size="sm">

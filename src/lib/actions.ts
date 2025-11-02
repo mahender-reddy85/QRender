@@ -97,7 +97,6 @@ const BaseQRFormSchema = z.object({
     type: z.string(),
     color: z.string().regex(/^#[0-9a-fA-F]{6}$/, 'Invalid color format.'),
     frame: z.string().optional(),
-    logoUrl: z.string().url('Invalid logo URL.').optional().or(z.literal('')),
     shape: z.string().optional(),
 });
 

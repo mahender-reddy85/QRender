@@ -46,7 +46,7 @@ export function HistoryClient({ initialHistory }: { initialHistory: QRCodeData[]
               <CardHeader>
                 <CardTitle className="text-lg">
                   <span className="block truncate" title={item.text}>
-                    {item.text.length > 30 ? `${item.text.slice(0, 30)}...` : item.text}
+                    {item.text.length > 15 ? `${item.text.slice(0, 15)}...` : item.text}
                   </span>
                 </CardTitle>
                 <CardDescription>

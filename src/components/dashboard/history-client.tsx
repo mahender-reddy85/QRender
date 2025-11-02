@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import type { QRCodeData } from '@/lib/definitions';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
@@ -13,7 +13,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
+import { deleteQrCode } from '@/lib/actions';
+import { Download, Trash2 } from 'lucide-react';
 
 
 function constructQrUrl(item: QRCodeData): string {
@@ -47,7 +49,7 @@ export function HistoryClient({ initialHistory }: { initialHistory: QRCodeData[]
                   {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="flex-1 flex items-center justify-center p-4">
+              <CardContent className="flex-1 flex flex-col items-center justify-center p-4 space-y-4">
                 <Image
                   src={constructQrUrl(item)}
                   alt={`QR Code for ${item.text}`}
@@ -56,6 +58,50 @@ export function HistoryClient({ initialHistory }: { initialHistory: QRCodeData[]
                   className="rounded-md"
                   unoptimized
                 />
+                <div className="w-full text-sm text-muted-foreground">
+                  <p><strong>Type:</strong> {item.type}</p>
+                  <div className="mt-2 flex gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={(e) => {
+                        // prevent opening the dialog when clicking the button
+                        e.stopPropagation();
+                        // download QR image
+                        (async () => {
+                          try {
+                            const response = await fetch(constructQrUrl(item));
+                            const blob = await response.blob();
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `qrcode-${item.text.slice(0,20).replace(/\s/g, '_')}.png`;
+                            document.body.appendChild(a);
+                            a.click();
+                            window.URL.revokeObjectURL(url);
+                            a.remove();
+                          } catch (err) {
+                            console.error('Download failed', err);
+                          }
+                        })();
+                      }}
+                    >
+                      <Download className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        if (confirm('Are you sure you want to delete this QR code?')) {
+                          await deleteQrCode(item.id);
+                        }
+                      }}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </DialogTrigger>

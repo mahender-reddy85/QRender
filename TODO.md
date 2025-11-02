@@ -1,36 +1,15 @@
-# TODO: Correct Errors and Remove Duplicates
+# TODO: Convert QR Code Generation to API Route
 
-## Errors to Fix
-- [x] Fix TypeScript errors in auth forms: update login and register function signatures in actions.ts to accept `state: AuthState | null`
-- [x] Fix incomplete onChange in qr-code-generator.tsx: replace `setNaN` with `setColor(e.target.value)` - already fixed in file
-- [x] Run TypeScript check again to ensure no errors remain
-- [x] Fix server component import issue in page.tsx by making it server component and removing client-side hooks
-- [x] Fix React useFormState deprecation warning - updated to useActionState from 'react'
-- [x] Hide login/signup buttons when user is logged in - redirect to dashboard
+## Steps to Complete
 
-## Duplicates to Remove
-- [x] No duplicates found in codebase
-- [x] Removed temp.html file
+- [x] Create API Route: Add `src/app/api/generate/route.ts` with a POST handler that handles the QR code generation logic (moved from `actions.ts`).
+- [x] Update Client Component: Modify `src/components/qr-code-generator.tsx` to use `fetch` for form submission instead of server actions, and manage state accordingly.
+- [x] Remove Server Action: Remove the `generateQrCode` function from `src/lib/actions.ts` since it will be replaced by the API route.
+- [ ] Test API Route: Test the API route by making a POST request to ensure it works.
+- [ ] Verify Form Submission: Verify the form submission works and QR code generates correctly.
+- [ ] Ensure No Regressions: Ensure no regressions in other functionalities.
 
-## User Requests
-- [x] Change redirect after login/signup to home page instead of dashboard
-- [x] Move theme toggle and login/signup buttons up in mobile view
+## Progress Tracking
 
-## Unwanted Files
-- [x] Remove temp.html
-
-## Followup
-- [x] Test the app to ensure fixes work correctly - App started successfully on http://localhost:9002
-- [x] Set up MySQL database with Prisma instead of SQLite
-- [x] Run Prisma migrations and generate client
-- [x] Update database connection to MySQL
-- [x] Create database tables using Prisma db push
-- [x] All tasks completed successfully
-
-## New Issues from User Feedback
-- [x] Fix QR code display: Add a proper title "QR Code for [text]" in the QRCodeDisplay component box
-- [x] Implement dashboard page at /dashboard for logged-in users to view QR history
-- [x] Add edit title functionality for QR codes in dashboard
-- [x] Add delete QR code functionality in dashboard
-- [x] Update header to include dashboard link for logged-in users
-- [x] Add server actions for updating QR code title and deleting QR codes
+- Started: [Date/Time]
+- Completed: [Date/Time]

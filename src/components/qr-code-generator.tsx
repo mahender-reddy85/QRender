@@ -1,8 +1,5 @@
 'use client';
 
-import { useActionState, startTransition } from 'react';
-import { useFormStatus } from 'react-dom';
-import { generateQrCode } from '@/lib/actions';
 import { Card, CardContent } from './ui/card';
 import { Label } from './ui/label';
 import { Input } from './ui/input';
@@ -27,8 +24,7 @@ const initialState: QRState = {
   errors: {},
 };
 
-function SubmitButton() {
-  const { pending } = useFormStatus();
+function SubmitButton({ pending }: { pending: boolean }) {
   return (
     <Button type="submit" className="w-full" disabled={pending}>
       {pending ? 'Generating...' : <> <Wand2 className="mr-2 h-4 w-4" /> Generate QR Code</>}
@@ -68,7 +64,7 @@ const QRForm = ({ type, children }: { type: string, children: React.ReactNode}) 
 
 
 export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean }) {
-  const [state, formAction] = useActionState(generateQrCode, initialState);
+  const [state, setState] = useState<QRState>(initialState);
   const [activeTab, setActiveTab] = useState("website");
   const [isFlipped, setIsFlipped] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
@@ -76,6 +72,7 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [musicFile, setMusicFile] = useState<File | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [pending, setPending] = useState(false);
 
   useEffect(() => {
     if (state.qrImageUrl) {
@@ -83,16 +80,31 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
     }
   }, [state.qrImageUrl]);
 
+  const handleSubmit = async (formData: FormData) => {
+    setPending(true);
+    try {
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        body: formData,
+      });
+      const result = await response.json();
+      if (response.ok) {
+        setState(result);
+      } else {
+        setState({ ...initialState, errors: result.errors || {}, message: result.message });
+      }
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+      setState({ ...initialState, message: 'An unexpected error occurred.' });
+    } finally {
+      setPending(false);
+    }
+  };
+
   const handleReset = () => {
     setIsFlipped(false);
     formRef.current?.reset();
-    // A small delay to allow the card to flip back before clearing the state
-    setTimeout(() => {
-      // We are not resetting the full state, just the QR code part
-      startTransition(() => {
-        formAction(new FormData()); // This is a trick to reset the formAction state
-      });
-    }, 300);
+    setState(initialState);
   };
 
 
@@ -274,7 +286,7 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
                         <div className="lg:w-3/4 w-full">
                             <Card className="w-full max-w-2xl mx-auto">
                                 <CardContent className="p-6">
-                                    <form action={formAction} ref={formRef}>
+                                    <form onSubmit={(e) => { e.preventDefault(); const formData = new FormData(e.currentTarget); handleSubmit(formData); }} ref={formRef}>
                                         {activeTab === "website" && (
                                             <QRForm type="website">
                                                 <div className="space-y-2">
@@ -558,7 +570,7 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
                                                     </AlertDescription>
                                                 </Alert>
                                             )}
-                                            <SubmitButton />
+                                            <SubmitButton pending={pending} />
                                         </div>
                                     </form>
                                 </CardContent>

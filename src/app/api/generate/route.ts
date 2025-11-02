@@ -135,16 +135,12 @@ export async function POST(request: NextRequest) {
                 }
                 break;
             case 'pdf':
-                validatedFields = PDFSchema.safeParse(data);
+                validatedFields = BaseQRFormSchema.extend({
+                    text: z.string().url('Please provide a valid URL for the PDF.'),
+                }).safeParse(data);
                 if (validatedFields.success) {
-                    const file = validatedFields.data.pdfFile;
-                    const buffer = Buffer.from(await file.arrayBuffer());
-                    const fileName = `${Date.now()}-${file.name}`;
-                    const filePath = path.join(process.cwd(), 'public', 'uploads', fileName);
-                    fs.mkdirSync(path.dirname(filePath), { recursive: true });
-                    fs.writeFileSync(filePath, buffer);
-                    qrContent = `/uploads/${fileName}`;
-                    displayText = file.name;
+                    qrContent = validatedFields.data.text;
+                    displayText = qrContent;
                 }
                 break;
             case 'location':

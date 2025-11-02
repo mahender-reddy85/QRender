@@ -15,6 +15,8 @@ import { Textarea } from './ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { cn } from '@/lib/utils';
 import { QRState } from '@/lib/definitions';
+import { UploadButton } from "@uploadthing/react";
+import type { OurFileRouter } from "@/app/api/uploadthing/core";
 
 
 const initialState: QRState = {
@@ -384,28 +386,18 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
                                             <QRForm type="pdf">
                                                 <div className="space-y-2">
                                                     <Label htmlFor="pdfFile">Upload PDF File</Label>
-                                                    <div
-                                                        className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center cursor-pointer hover:border-muted-foreground/50 transition-colors"
-                                                        onClick={() => document.getElementById('pdfFile')?.click()}
-                                                        onDrop={(e) => {
-                                                            e.preventDefault();
-                                                            const files = e.dataTransfer.files;
-                                                            if (files.length > 0) {
-                                                                setPdfFile(files[0]);
-                                                                const fileInput = document.getElementById('pdfFile') as HTMLInputElement;
-                                                                if (fileInput) {
-                                                                    const dt = new DataTransfer();
-                                                                    dt.items.add(files[0]);
-                                                                    fileInput.files = dt.files;
-                                                                }
+                                                    <UploadButton<OurFileRouter, "pdfUploader">
+                                                        endpoint="pdfUploader"
+                                                        onClientUploadComplete={(res) => {
+                                                            if (res && res[0]) {
+                                                                alert(`File uploaded successfully: ${res[0].url}`);
+                                                                // You can now generate QR code from res[0].url
                                                             }
                                                         }}
-                                                        onDragOver={(e) => e.preventDefault()}
-                                                    >
-                                                        <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
-                                                        <p className="text-sm text-muted-foreground">{pdfFile ? pdfFile.name : "Drag and drop a PDF file here, or click to select"}</p>
-                                                        <Input id="pdfFile" name="pdfFile" type="file" accept="application/pdf" required className="hidden" onChange={(e) => setPdfFile(e.target.files?.[0] || null)} />
-                                                    </div>
+                                                        onUploadError={(error) => {
+                                                            alert(`Upload failed: ${error.message}`);
+                                                        }}
+                                                    />
                                                     {state.errors?.pdfFile && <p className="text-sm font-medium text-destructive">{state.errors.pdfFile}</p>}
                                                 </div>
                                             </QRForm>
@@ -474,28 +466,18 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
                                             <QRForm type="video">
                                                 <div className="space-y-2">
                                                     <Label htmlFor="videoFile">Upload Video File</Label>
-                                                    <div
-                                                        className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center cursor-pointer hover:border-muted-foreground/50 transition-colors"
-                                                        onClick={() => document.getElementById('videoFile')?.click()}
-                                                        onDrop={(e) => {
-                                                            e.preventDefault();
-                                                            const files = e.dataTransfer.files;
-                                                            if (files.length > 0) {
-                                                                setVideoFile(files[0]);
-                                                                const fileInput = document.getElementById('videoFile') as HTMLInputElement;
-                                                                if (fileInput) {
-                                                                    const dt = new DataTransfer();
-                                                                    dt.items.add(files[0]);
-                                                                    fileInput.files = dt.files;
-                                                                }
+                                                    <UploadButton<OurFileRouter, "videoUploader">
+                                                        endpoint="videoUploader"
+                                                        onClientUploadComplete={(res) => {
+                                                            if (res && res[0]) {
+                                                                alert(`File uploaded successfully: ${res[0].url}`);
+                                                                // You can now generate QR code from res[0].url
                                                             }
                                                         }}
-                                                        onDragOver={(e) => e.preventDefault()}
-                                                    >
-                                                        <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
-                                                        <p className="text-sm text-muted-foreground">{videoFile ? videoFile.name : "Drag and drop a video file here, or click to select"}</p>
-                                                        <Input id="videoFile" name="videoFile" type="file" accept="video/*" required className="hidden" onChange={(e) => setVideoFile(e.target.files?.[0] || null)} />
-                                                    </div>
+                                                        onUploadError={(error) => {
+                                                            alert(`Upload failed: ${error.message}`);
+                                                        }}
+                                                    />
                                                     {state.errors?.videoFile && <p className="text-sm font-medium text-destructive">{state.errors.videoFile}</p>}
                                                 </div>
                                             </QRForm>
@@ -504,28 +486,18 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
                                             <QRForm type="music">
                                                 <div className="space-y-2">
                                                     <Label htmlFor="musicFile">Upload Music File</Label>
-                                                    <div
-                                                        className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center cursor-pointer hover:border-muted-foreground/50 transition-colors"
-                                                        onClick={() => document.getElementById('musicFile')?.click()}
-                                                        onDrop={(e) => {
-                                                            e.preventDefault();
-                                                            const files = e.dataTransfer.files;
-                                                            if (files.length > 0) {
-                                                                setMusicFile(files[0]);
-                                                                const fileInput = document.getElementById('musicFile') as HTMLInputElement;
-                                                                if (fileInput) {
-                                                                    const dt = new DataTransfer();
-                                                                    dt.items.add(files[0]);
-                                                                    fileInput.files = dt.files;
-                                                                }
+                                                    <UploadButton<OurFileRouter, "musicUploader">
+                                                        endpoint="musicUploader"
+                                                        onClientUploadComplete={(res) => {
+                                                            if (res && res[0]) {
+                                                                alert(`File uploaded successfully: ${res[0].url}`);
+                                                                // You can now generate QR code from res[0].url
                                                             }
                                                         }}
-                                                        onDragOver={(e) => e.preventDefault()}
-                                                    >
-                                                        <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
-                                                        <p className="text-sm text-muted-foreground">{musicFile ? musicFile.name : "Drag and drop a music file here, or click to select"}</p>
-                                                        <Input id="musicFile" name="musicFile" type="file" accept="audio/*" required className="hidden" onChange={(e) => setMusicFile(e.target.files?.[0] || null)} />
-                                                    </div>
+                                                        onUploadError={(error) => {
+                                                            alert(`Upload failed: ${error.message}`);
+                                                        }}
+                                                    />
                                                     {state.errors?.musicFile && <p className="text-sm font-medium text-destructive">{state.errors.musicFile}</p>}
                                                 </div>
                                             </QRForm>
@@ -534,28 +506,18 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
                                             <QRForm type="image">
                                                 <div className="space-y-2">
                                                     <Label htmlFor="imageFile">Upload Image File</Label>
-                                                    <div
-                                                        className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center cursor-pointer hover:border-muted-foreground/50 transition-colors"
-                                                        onClick={() => document.getElementById('imageFile')?.click()}
-                                                        onDrop={(e) => {
-                                                            e.preventDefault();
-                                                            const files = e.dataTransfer.files;
-                                                            if (files.length > 0) {
-                                                                setImageFile(files[0]);
-                                                                const fileInput = document.getElementById('imageFile') as HTMLInputElement;
-                                                                if (fileInput) {
-                                                                    const dt = new DataTransfer();
-                                                                    dt.items.add(files[0]);
-                                                                    fileInput.files = dt.files;
-                                                                }
+                                                    <UploadButton<OurFileRouter, "imageUploader">
+                                                        endpoint="imageUploader"
+                                                        onClientUploadComplete={(res) => {
+                                                            if (res && res[0]) {
+                                                                alert(`File uploaded successfully: ${res[0].url}`);
+                                                                // You can now generate QR code from res[0].url
                                                             }
                                                         }}
-                                                        onDragOver={(e) => e.preventDefault()}
-                                                    >
-                                                        <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
-                                                        <p className="text-sm text-muted-foreground">{imageFile ? imageFile.name : "Drag and drop an image file here, or click to select"}</p>
-                                                        <Input id="imageFile" name="imageFile" type="file" accept="image/*" required className="hidden" onChange={(e) => setImageFile(e.target.files?.[0] || null)} />
-                                                    </div>
+                                                        onUploadError={(error) => {
+                                                            alert(`Upload failed: ${error.message}`);
+                                                        }}
+                                                    />
                                                     {state.errors?.imageFile && <p className="text-sm font-medium text-destructive">{state.errors.imageFile}</p>}
                                                 </div>
                                             </QRForm>

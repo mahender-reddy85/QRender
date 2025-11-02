@@ -3,21 +3,10 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { getSessionUserId } from "@/lib/auth";
 import { QRCodeGeneratorWrapper } from "@/components/qr-code-generator-wrapper";
 import { useEffect, useState } from "react";
 
 export default function HomePage() {
-  const [userId, setUserId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchUserId = async () => {
-      const id = await getSessionUserId();
-      setUserId(id);
-    };
-    fetchUserId();
-  }, []);
-
   return (
     <main className="container flex-1 py-0 border-0">
       <section className="relative text-center">
@@ -29,20 +18,10 @@ export default function HomePage() {
         </p>
         <div className="mt-6 flex items-center justify-center space-x-4">
           <ThemeToggle />
-          {!userId && (
-            <div className="flex items-center space-x-2">
-              <Button asChild variant="ghost" size="sm">
-                <Link href="/login">Log In</Link>
-              </Button>
-              <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90" size="sm">
-                <Link href="/register">Sign Up</Link>
-              </Button>
-            </div>
-          )}
         </div>
       </section>
 
-      <QRCodeGeneratorWrapper isUserLoggedIn={!!userId} />
+      <QRCodeGeneratorWrapper isUserLoggedIn={false} />
     </main>
   );
 }

@@ -45,14 +45,6 @@ export function QRCodeCard({ qr }: { qr: QRCodeData }) {
               Created: {format(new Date(qr.createdAt), 'MMM dd, yyyy')}
             </p>
           </div>
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={handleDownload}>
-              <Download className="h-4 w-4" />
-            </Button>
-            <Button size="sm" variant="outline" onClick={handleDelete}>
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </div>
         </div>
       </CardHeader>
       <CardContent>
@@ -67,6 +59,16 @@ export function QRCodeCard({ qr }: { qr: QRCodeData }) {
           />
           <div className="text-sm text-muted-foreground space-y-1 w-full">
             <p><strong>Type:</strong> {qr.type}</p>
+            <div className="flex gap-2 mt-4">
+              <Button size="sm" variant="outline" onClick={handleDownload}>
+                <Download className="h-4 w-4 mr-2" />
+                Download
+              </Button>
+              <Button size="sm" variant="outline" onClick={handleDelete}>
+                <Trash2 className="h-4 w-4 mr-2" />
+                Delete
+              </Button>
+            </div>
           </div>
         </div>
       </CardContent>

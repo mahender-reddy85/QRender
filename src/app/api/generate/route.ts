@@ -212,18 +212,24 @@ export async function POST(request: NextRequest) {
 
         const userId = await getSessionUserId();
         if (userId) {
-            await prisma.qRCode.create({
-                data: {
-                    userId,
-                    type,
-                    text: displayText,
-                    color,
-                    size: 250,
-                    frame: null,
-                    logoUrl: null,
-                    shape: null,
-                },
+            // Check if user exists before creating QR code
+            const userExists = await prisma.user.findUnique({
+                where: { id: userId },
             });
+            if (userExists) {
+                await prisma.qRCode.create({
+                    data: {
+                        userId,
+                        type,
+                        text: displayText,
+                        color,
+                        size: 250,
+                        frame: null,
+                        logoUrl: null,
+                        shape: null,
+                    },
+                });
+            }
         }
 
         return NextResponse.json({ qrImageUrl: qrApiUrl, text: displayText, message: 'QR Code generated!' });

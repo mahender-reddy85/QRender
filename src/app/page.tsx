@@ -5,13 +5,10 @@ import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { getSessionUserId } from "@/lib/auth";
 import { QRCodeGeneratorWrapper } from "@/components/qr-code-generator-wrapper";
-import { MobileHeader, MobileAuthButtons } from "@/components/mobile-header";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { useEffect, useState } from "react";
 
 export default function HomePage() {
   const [userId, setUserId] = useState<string | null>(null);
-  const isMobile = useIsMobile();
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -30,7 +27,19 @@ export default function HomePage() {
         <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
           Create, customize, and manage your QR codes instantly.
         </p>
-        <MobileHeader userId={userId} />
+        <div className="mt-6 flex items-center justify-center space-x-4">
+          <ThemeToggle />
+          {!userId && (
+            <div className="flex items-center space-x-2">
+              <Button asChild variant="ghost" size="sm">
+                <Link href="/login">Log In</Link>
+              </Button>
+              <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90" size="sm">
+                <Link href="/register">Sign Up</Link>
+              </Button>
+            </div>
+          )}
+        </div>
       </section>
 
       <QRCodeGeneratorWrapper isUserLoggedIn={!!userId} />

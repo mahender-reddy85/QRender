@@ -93,12 +93,10 @@ export function QRCodeDisplay({ imageUrl, text, frame, shape }: QRCodeDisplayPro
     switch (shape) {
       case 'circle':
         return 'rounded-full';
-      case 'rounded':
-        return 'rounded-lg';
       case 'square':
         return '';
       default:
-        return 'rounded-lg';
+        return '';
     }
   };
 

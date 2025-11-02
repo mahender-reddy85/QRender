@@ -38,10 +38,9 @@ function SubmitButton() {
 
 const QRForm = ({ type, children }: { type: string, children: React.ReactNode}) => {
     const [color, setColor] = useState('#000000');
-    const [size, setSize] = useState([250]);
     const [frame, setFrame] = useState('none');
     const [logoUrl, setLogoUrl] = useState('');
-    const [shape, setShape] = useState('rounded');
+    const [shape, setShape] = useState('square');
 
     return (
         <div className="space-y-6">
@@ -63,23 +62,7 @@ const QRForm = ({ type, children }: { type: string, children: React.ReactNode}) 
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                        <Label htmlFor="size">Size</Label>
-                        <span className="text-sm text-muted-foreground">{size[0]}px</span>
-                    </div>
-                    <Slider
-                        id="size"
-                        name="size"
-                        defaultValue={size}
-                        onValueChange={setSize}
-                        max={1000}
-                        min={50}
-                        step={10}
-                    />
-                </div>
-
+            <div className="space-y-4">
                 <div className="space-y-2">
                     <Label htmlFor="frame">Frame</Label>
                     <Select name="frame" value={frame} onValueChange={setFrame}>
@@ -121,7 +104,6 @@ const QRForm = ({ type, children }: { type: string, children: React.ReactNode}) 
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="square">Square</SelectItem>
-                            <SelectItem value="rounded">Rounded</SelectItem>
                             <SelectItem value="circle">Circle</SelectItem>
                         </SelectContent>
                     </Select>

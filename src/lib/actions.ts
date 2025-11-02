@@ -96,7 +96,6 @@ export async function logout() {
 const BaseQRFormSchema = z.object({
     type: z.string(),
     color: z.string().regex(/^#[0-9a-fA-F]{6}$/, 'Invalid color format.'),
-    size: z.coerce.number().min(50).max(1000),
     frame: z.string().optional(),
     logoUrl: z.string().url('Invalid logo URL.').optional().or(z.literal('')),
     shape: z.string().optional(),
@@ -289,11 +288,11 @@ export async function generateQrCode(prevState: QRState, formData: FormData): Pr
             };
         }
 
-        const { color, size, frame, logoUrl, shape } = validatedFields.data;
+        const { color, frame, logoUrl, shape } = validatedFields.data;
         const colorHex = color.substring(1); // Remove '#'
 
         // Build QR API URL with customizations
-        let qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrContent)}&size=${size}x${size}&color=${colorHex}&bgcolor=F0F0F0`;
+        let qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrContent)}&size=250x250&color=${colorHex}&bgcolor=F0F0F0`;
         if (logoUrl) {
             qrApiUrl += `&logo=${encodeURIComponent(logoUrl)}`;
         }
@@ -306,7 +305,7 @@ export async function generateQrCode(prevState: QRState, formData: FormData): Pr
                     type,
                     text: displayText,
                     color,
-                    size,
+                    size: 250,
                     frame,
                     logoUrl,
                     shape,

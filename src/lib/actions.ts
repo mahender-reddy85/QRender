@@ -96,7 +96,6 @@ export async function logout() {
 const BaseQRFormSchema = z.object({
     type: z.string(),
     color: z.string().regex(/^#[0-9a-fA-F]{6}$/, 'Invalid color format.'),
-    shape: z.string().optional(),
 });
 
 const WebsiteSchema = BaseQRFormSchema.extend({
@@ -286,7 +285,7 @@ export async function generateQrCode(prevState: QRState, formData: FormData): Pr
             };
         }
 
-        const { color, shape } = validatedFields.data;
+        const { color } = validatedFields.data;
         const colorHex = color.substring(1); // Remove '#'
 
         // Build QR API URL with customizations
@@ -303,13 +302,13 @@ export async function generateQrCode(prevState: QRState, formData: FormData): Pr
                     size: 250,
                     frame: null,
                     logoUrl: null,
-                    shape,
+                    shape: null,
                 },
             });
             revalidatePath('/dashboard');
         }
 
-        return { qrImageUrl: qrApiUrl, text: displayText, shape, message: 'QR Code generated!' };
+        return { qrImageUrl: qrApiUrl, text: displayText, message: 'QR Code generated!' };
     } catch (error) {
         console.error('Error generating QR code:', error);
         return { message: 'An unexpected error occurred while generating the QR code.' };

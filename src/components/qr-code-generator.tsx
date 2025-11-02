@@ -61,20 +61,7 @@ const QRForm = ({ type, children }: { type: string, children: React.ReactNode}) 
 
 
 
-            <div className="space-y-4">
-                <div className="space-y-2">
-                    <Label htmlFor="shape">Shape</Label>
-                    <Select name="shape" defaultValue="square">
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select shape" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="square">Square</SelectItem>
-                            <SelectItem value="circle">Circle</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-            </div>
+
         </div>
     )
 }
@@ -285,7 +272,7 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
                         </div>
                         {/* Main Card */}
                         <div className="lg:w-3/4 w-full">
-                            <Card className="w-full h-full">
+                            <Card className="w-full max-w-2xl mx-auto">
                                 <CardContent className="p-6">
                                     <form action={formAction} ref={formRef}>
                                         {activeTab === "website" && (
@@ -606,13 +593,7 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
                     <div className="w-full h-full">
                        {state.qrImageUrl ? (
                             <div className="flex flex-col h-full">
-                <QRCodeDisplay imageUrl={state.qrImageUrl} text={state.text || 'qrcode'} shape={state.shape || undefined}/>
-                                <div className="p-6 pt-0">
-                                    <Button onClick={handleReset} variant="outline" className="w-full">
-                                        <RotateCcw className="mr-2 h-4 w-4"/>
-                                        Create Another
-                                    </Button>
-                                </div>
+                <QRCodeDisplay imageUrl={state.qrImageUrl} text={state.text || 'qrcode'}/>
                             </div>
                         ) : (
                             // This is shown briefly during flip-back

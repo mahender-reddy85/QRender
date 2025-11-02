@@ -11,10 +11,9 @@ import { cn } from '@/lib/utils';
 type QRCodeDisplayProps = {
   imageUrl: string;
   text: string;
-  shape?: string;
 };
 
-export function QRCodeDisplay({ imageUrl, text, shape }: QRCodeDisplayProps) {
+export function QRCodeDisplay({ imageUrl, text }: QRCodeDisplayProps) {
   const { toast } = useToast();
   const [isDownloading, setIsDownloading] = useState(false);
 
@@ -67,16 +66,7 @@ export function QRCodeDisplay({ imageUrl, text, shape }: QRCodeDisplayProps) {
 
 
 
-  const getShapeClass = (shape?: string) => {
-    switch (shape) {
-      case 'circle':
-        return 'rounded-full';
-      case 'square':
-        return '';
-      default:
-        return '';
-    }
-  };
+
 
   return (
     <Card className="max-w-sm mx-auto w-full animate-in fade-in-0 zoom-in-95 duration-500">
@@ -90,7 +80,7 @@ export function QRCodeDisplay({ imageUrl, text, shape }: QRCodeDisplayProps) {
             alt={`QR Code for ${text}`}
             width={300}
             height={300}
-            className={cn("rounded-lg", getShapeClass(shape))}
+            className="rounded-lg"
             unoptimized // Required for external URLs that aren't in next.config.js remotePatterns
           />
         </div>

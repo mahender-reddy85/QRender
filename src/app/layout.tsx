@@ -12,7 +12,9 @@ export const metadata: Metadata = {
   title: "QRender",
   description: "Generate and manage your QR codes with ease.",
   icons: {
-    icon: "/favicon.ico",
+    // Use the PNG favicon (the .ico file is actually a PNG here) and provide a shortcut
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
   },
 };
 

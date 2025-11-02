@@ -24,8 +24,6 @@ const initialState: QRState = {
   message: '',
   qrImageUrl: '',
   text: '',
-  frame: '',
-  shape: '',
   errors: {},
 };
 
@@ -660,7 +658,7 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
                     <div className="w-full h-full">
                        {state.qrImageUrl ? (
                             <div className="flex flex-col h-full">
-                                <QRCodeDisplay imageUrl={state.qrImageUrl} text={state.text || 'qrcode'} frame={state.frame} shape={state.shape}/>
+                <QRCodeDisplay imageUrl={state.qrImageUrl} text={state.text || 'qrcode'} frame={state.frame || undefined} shape={state.shape || undefined}/>
                                 <div className="p-6 pt-0">
                                     <Button onClick={handleReset} variant="outline" className="w-full">
                                         <RotateCcw className="mr-2 h-4 w-4"/>

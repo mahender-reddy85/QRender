@@ -315,7 +315,7 @@ export async function generateQrCode(prevState: QRState, formData: FormData): Pr
             revalidatePath('/dashboard');
         }
 
-        return { qrImageUrl: qrApiUrl, text: displayText, message: 'QR Code generated!' };
+        return { qrImageUrl: qrApiUrl, text: displayText, frame, shape, message: 'QR Code generated!' };
     } catch (error) {
         console.error('Error generating QR code:', error);
         return { message: 'An unexpected error occurred while generating the QR code.' };

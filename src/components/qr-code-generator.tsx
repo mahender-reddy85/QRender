@@ -103,6 +103,16 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
     }
   };
 
+    const handleUploadComplete = (url: string, type: string = 'website') => {
+        // Build a minimal FormData matching the generate API expectations
+        const formData = new FormData();
+        formData.append('type', type);
+        formData.append('text', url);
+        // default color (black) - the server expects a color hex string like #000000
+        formData.append('color', '#000000');
+        handleSubmit(formData);
+    };
+
   const handleReset = () => {
     setIsFlipped(false);
     formRef.current?.reset();
@@ -390,8 +400,8 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
                                                         endpoint="pdfUploader"
                                                         onClientUploadComplete={(res) => {
                                                             if (res && res[0]) {
-                                                                alert(`File uploaded successfully: ${res[0].ufsUrl}`);
-                                                                // You can now generate QR code from res[0].ufsUrl
+                                                                // generate QR code pointing to the uploaded PDF URL
+                                                                handleUploadComplete(res[0].ufsUrl, 'pdf');
                                                             }
                                                         }}
                                                         onUploadError={(error) => {
@@ -470,8 +480,8 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
                                                         endpoint="videoUploader"
                                                         onClientUploadComplete={(res) => {
                                                             if (res && res[0]) {
-                                                                alert(`File uploaded successfully: ${res[0].ufsUrl}`);
-                                                                // You can now generate QR code from res[0].ufsUrl
+                                                                // use website type for uploaded media URLs
+                                                                handleUploadComplete(res[0].ufsUrl, 'website');
                                                             }
                                                         }}
                                                         onUploadError={(error) => {
@@ -490,8 +500,7 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
                                                         endpoint="musicUploader"
                                                         onClientUploadComplete={(res) => {
                                                             if (res && res[0]) {
-                                                                alert(`File uploaded successfully: ${res[0].ufsUrl}`);
-                                                                // You can now generate QR code from res[0].ufsUrl
+                                                                handleUploadComplete(res[0].ufsUrl, 'website');
                                                             }
                                                         }}
                                                         onUploadError={(error) => {
@@ -510,8 +519,7 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
                                                         endpoint="imageUploader"
                                                         onClientUploadComplete={(res) => {
                                                             if (res && res[0]) {
-                                                                alert(`File uploaded successfully: ${res[0].ufsUrl}`);
-                                                                // You can now generate QR code from res[0].ufsUrl
+                                                                handleUploadComplete(res[0].ufsUrl, 'website');
                                                             }
                                                         }}
                                                         onUploadError={(error) => {

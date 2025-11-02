@@ -39,8 +39,6 @@ function SubmitButton() {
 const QRForm = ({ type, children }: { type: string, children: React.ReactNode}) => {
     const [color, setColor] = useState('#000000');
     const [frame, setFrame] = useState('none');
-    const [logoUrl, setLogoUrl] = useState('');
-    const [shape, setShape] = useState('square');
 
     return (
         <div className="space-y-6">
@@ -84,21 +82,10 @@ const QRForm = ({ type, children }: { type: string, children: React.ReactNode}) 
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                    <Label htmlFor="logoUrl">Logo URL (optional)</Label>
-                    <Input
-                        id="logoUrl"
-                        name="logoUrl"
-                        value={logoUrl}
-                        onChange={(e) => setLogoUrl(e.target.value)}
-                        placeholder="https://example.com/logo.png"
-                    />
-                </div>
-
+            <div className="space-y-4">
                 <div className="space-y-2">
                     <Label htmlFor="shape">Shape</Label>
-                    <Select name="shape" value={shape} onValueChange={setShape}>
+                    <Select name="shape" defaultValue="square">
                         <SelectTrigger>
                             <SelectValue placeholder="Select shape" />
                         </SelectTrigger>

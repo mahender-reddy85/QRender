@@ -438,7 +438,7 @@ export function QRCodeGenerator({ isUserLoggedIn }: { isUserLoggedIn: boolean })
                                         {activeTab === "pdf" && (
                                             <QRForm type="pdf">
                                                 <div className="space-y-2">
-                                                    <Label htmlFor="pdfFile">Upload PDF File :</Label>
+                                                    <Label htmlFor="pdfFile">Upload PDF File</Label>
                                                     <div
                                                         className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-6 text-center cursor-pointer hover:border-muted-foreground/50 transition-colors"
                                                         onClick={() => document.getElementById('pdfFile')?.click()}

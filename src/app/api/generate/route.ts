@@ -212,11 +212,7 @@ export async function POST(request: NextRequest) {
 
         const userId = await getSessionUserId();
         if (userId) {
-            // Check if user exists before creating QR code
-            const userExists = await prisma.user.findUnique({
-                where: { id: userId },
-            });
-            if (userExists) {
+            try {
                 await prisma.qRCode.create({
                     data: {
                         userId,
@@ -229,6 +225,9 @@ export async function POST(request: NextRequest) {
                         shape: null,
                     },
                 });
+            } catch (dbError) {
+                // Log the error but don't fail the QR generation
+                console.error('Failed to save QR code to database:', dbError);
             }
         }
 

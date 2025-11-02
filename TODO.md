@@ -7,7 +7,7 @@
 - [x] Remove Server Action: Remove the `generateQrCode` function from `src/lib/actions.ts` since it will be replaced by the API route.
 - [x] Test API Route: Test the API route by making a POST request to ensure it works.
 - [x] Verify Form Submission: Verify the form submission works and QR code generates correctly.
-- [ ] Ensure No Regressions: Ensure no regressions in other functionalities.
+- [x] Ensure No Regressions: Ensure no regressions in other functionalities.
 
 ## Progress Tracking
 

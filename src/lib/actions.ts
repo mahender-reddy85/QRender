@@ -303,7 +303,7 @@ export async function generateQrCode(prevState: QRState, formData: FormData): Pr
                     color,
                     size: 250,
                     frame,
-                    logoUrl,
+                    logoUrl: null,
                     shape,
                 },
             });

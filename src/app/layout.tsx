@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 import { Header } from "@/components/header";
 import { ThemeProvider } from "@/components/theme-provider";
+import Analytics from "@/components/analytics";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -25,6 +27,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=G-GHCFZBLLWJ`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-GHCFZBLLWJ');
+          `}
+        </Script>
+      </head>
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
@@ -37,6 +53,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <Analytics />
           <div className="relative flex min-h-screen flex-col">
             <Header />
             <div className="flex-1">{children}</div>

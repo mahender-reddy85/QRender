@@ -11,9 +11,20 @@ export const ourFileRouter = {
     video: { maxFileSize: "128MB", maxFileCount: 1 },
     audio: { maxFileSize: "32MB", maxFileCount: 1 },
   })
-    .onUploadComplete(({ file }) => {
-      console.log("Upload complete for file:", file);
-      return { url: file.ufsUrl };
+    .onUploadComplete(async ({ file }) => {
+      try {
+        console.log("Uploaded file:", file.ufsUrl);
+        return {
+          status: "ok",
+          url: file.ufsUrl,
+        };
+      } catch (e) {
+        console.error("Callback failed:", e);
+        return {
+          status: "error",
+          error: "callback crashed",
+        };
+      }
     })
 } satisfies FileRouter;
 

@@ -42,6 +42,7 @@ const QRForm = ({
           <FileUpload
             value={fileUrl}
             onChange={(url) => onFileChange?.(url)}
+            fileType={type as 'image' | 'video' | 'audio' | 'pdf'}
           />
         </div>
       );
@@ -547,16 +548,16 @@ export function QRCodeGenerator() {
                       </QRForm>
                     )}
 
-                    {activeTab === 'phone' && (
+                    {activeTab === 'sms' && (
                       <QRForm 
-                        type="phone"
+                        type="sms"
                         fileUrl={fileUrl}
                       >
                         <div className="space-y-4">
                           <div className="space-y-2">
-                            <Label htmlFor="smsNumber">Phone Number</Label>
+                            <Label htmlFor="phoneNumber">Phone Number</Label>
                             <Input
-                              id="smsNumber"
+                              id="phoneNumber"
                               name="phone"
                               type="tel"
                               value={formValues['phone'] || ''}
@@ -566,15 +567,38 @@ export function QRCodeGenerator() {
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="message">Message</Label>
+                            <Label htmlFor="smsMessage">Message</Label>
                             <textarea
-                              id="message"
-                              name="message"
-                              value={formValues['message'] || ''}
+                              id="smsMessage"
+                              name="sms"
+                              value={formValues['sms'] || ''}
                               onChange={handleInputChange}
                               rows={3}
                               className="w-full p-2 border rounded"
+                              placeholder="Type your message here..."
                             ></textarea>
+                          </div>
+                        </div>
+                      </QRForm>
+                    )}
+
+                    {activeTab === 'phone' && (
+                      <QRForm 
+                        type="phone"
+                        fileUrl={fileUrl}
+                      >
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="phoneNumber">Phone Number</Label>
+                            <Input
+                              id="phoneNumber"
+                              name="phone"
+                              type="tel"
+                              value={formValues['phone'] || ''}
+                              onChange={handleInputChange}
+                              placeholder="+1234567890"
+                              required
+                            />
                           </div>
                         </div>
                       </QRForm>

@@ -2,19 +2,23 @@
 
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { Image as ImageIcon, Video, X, Upload as UploadIcon, FileText } from "lucide-react";
+import { Image as ImageIcon, Video, X, Music, FileText } from "lucide-react";
 import { Progress } from "./progress";
 import { useUploadThing } from "@/lib/uploadthing";
 import { cn } from "@/lib/utils";
 
+type FileType = 'image' | 'video' | 'audio' | 'pdf';
+
 type FileUploadProps = {
   onChange: (url: string) => void;
   value?: string;
+  fileType?: FileType;
 };
 
 export const FileUpload = ({
   onChange,
   value,
+  fileType = 'image'
 }: FileUploadProps) => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
@@ -57,22 +61,63 @@ export const FileUpload = ({
     [startUpload]
   );
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: handleDrop,
-    accept: {
-      'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp'],
-      'application/pdf': ['.pdf'],
-      'video/*': ['.mp4', '.webm', '.ogg'],
-      'audio/*': ['.mp3', '.wav', '.ogg', '.m4a'],
+  const acceptMap = {
+    image: {
+      'image/png': ['.png'],
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/gif': ['.gif'],
+      'image/webp': ['.webp']
     },
-    maxFiles: 1,
+    video: {
+      'video/mp4': ['.mp4'],
+      'video/webm': ['.webm'],
+      'video/quicktime': ['.mov'],
+      'video/x-msvideo': ['.avi'],
+      'video/x-matroska': ['.mkv']
+    },
+    audio: {
+      'audio/mpeg': ['.mp3'],
+      'audio/wav': ['.wav'],
+      'audio/ogg': ['.ogg'],
+      'audio/mp4': ['.m4a'],
+      'audio/aac': ['.aac']
+    },
+    pdf: { 'application/pdf': ['.pdf'] }
+  };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop: (acceptedFiles, fileRejections) => {
+      if (fileRejections.length > 0) {
+        setError(`Invalid file type. Please upload a ${fileType} file.`);
+        return;
+      }
+      handleDrop(acceptedFiles);
+    },
+    onDropRejected: () => {
+      setError(`Please select a valid ${fileType} file.`);
+    },
     disabled: isUploading,
+    multiple: false,
+    accept: acceptMap[fileType] || acceptMap.image,
+    noClick: false,
+    noKeyboard: true,
+    useFsAccessApi: false // Force using the standard file input
   });
 
-  const fileType = value?.split(".").pop();
-  const isImage = fileType?.match(/(jpg|jpeg|png|gif|webp)$/);
-  const isVideo = fileType?.match(/(mp4|webm|mov|ogg)$/);
-  const isPDF = fileType?.toLowerCase() === 'pdf';
+  // Force file input to show only allowed file types
+  const inputProps = getInputProps();
+  const modifiedInputProps = {
+    ...inputProps,
+    accept: Object.entries(acceptMap[fileType] || acceptMap.image)
+      .map(([mimeType, exts]) => exts.map(ext => `${mimeType}${ext}`).join(','))
+      .join(',')
+  };
+
+  const fileTypeValue = value?.split('.').pop()?.toLowerCase();
+  const isImage = fileType === 'image' || fileTypeValue?.match(/(jpg|jpeg|png|gif|webp)$/);
+  const isVideo = fileType === 'video' || fileTypeValue?.match(/(mp4|webm|mov|avi|mkv|ogg)$/);
+  const isAudio = fileType === 'audio' || fileTypeValue?.match(/(mp3|wav|ogg|m4a|aac)$/);
+  const isPDF = fileType === 'pdf' || fileTypeValue === 'pdf';
 
   if (value) {
     return (
@@ -130,18 +175,22 @@ export const FileUpload = ({
         isDragActive ? "border-primary bg-muted/50" : "border-muted-foreground/25"
       )}
     >
-      <input {...getInputProps()} />
+      <input {...modifiedInputProps} />
       <div className="flex flex-col items-center justify-center space-y-2">
-        <UploadIcon className="w-10 h-10 text-muted-foreground" />
-        <p className="text-sm text-muted-foreground">
-          {isDragActive
-            ? "Drop the file here..."
-            : "Drag & drop a file here, or click to select"}
+        {fileType === 'image' && <ImageIcon className="w-10 h-10 text-muted-foreground" />}
+        {fileType === 'video' && <Video className="w-10 h-10 text-muted-foreground" />}
+        {fileType === 'audio' && <Music className="w-10 h-10 text-muted-foreground" />}
+        {fileType === 'pdf' && <FileText className="w-10 h-10 text-muted-foreground" />}
+        <p className="text-sm text-muted-foreground text-center">
+          {isDragActive 
+            ? `Drop the ${fileType} file here...`
+            : `Click to select or drag & drop a ${fileType} file`}
         </p>
         <p className="text-xs text-muted-foreground text-center">
-          Supports: Images (JPG, PNG, GIF, WEBP up to 4MB),<br/>
-Videos (MP4, WebM, OGG up to 128MB),<br/>
-          Audio (MP3, WAV, OGG, M4A up to 32MB)
+          {fileType === 'image' && 'Supports: JPG, PNG, GIF, WEBP (up to 4MB)'}
+          {fileType === 'video' && 'Supports: MP4, WebM, MOV, AVI, MKV (up to 128MB)'}
+          {fileType === 'audio' && 'Supports: MP3, WAV, OGG, M4A, AAC (up to 32MB)'}
+          {fileType === 'pdf' && 'Supports: PDF files only (up to 4MB)'}
         </p>
         {isUploading && (
           <div className="w-full max-w-xs mx-auto mt-4">

@@ -96,11 +96,20 @@ export function QRCodeDisplay({
 
   return (
     <div className={cn("flex flex-col items-center justify-center space-y-6 p-6 rounded-lg bg-card text-card-foreground shadow-sm border border-border w-full max-w-md mx-auto", className)}>
-      <div className="relative p-2 bg-white rounded">
-        <img
+      <div className="relative p-2 bg-white rounded w-full flex justify-center">
+        <Image
           src={imageUrl}
-          alt={text ? `QR Code for ${text}` : 'QR Code'}
-          className="w-full max-w-[256px] h-auto aspect-square"
+          alt={`QR Code${text ? ` for ${text}` : ''}`}
+          className="w-full h-auto max-h-[300px] object-contain"
+          width={300}
+          height={300}
+          unoptimized={imageUrl.startsWith('blob:') || imageUrl.startsWith('data:')}
+          onError={(e) => {
+            // Fallback to img if Image component fails
+            const img = e.target as HTMLImageElement;
+            img.onerror = null;
+            img.src = imageUrl;
+          }}
         />
       </div>
       

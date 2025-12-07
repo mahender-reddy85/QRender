@@ -114,7 +114,7 @@ export function QRCodeGenerator() {
   const [fileUrl, setFileUrl] = useState<string>('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
-  const [isPending, startTransition] = useTransition();
+  const [_, startTransition] = useTransition();
   
   const [state, formAction] = useActionState<QRState, FormData>(
     generateQrCode,
@@ -466,7 +466,11 @@ export function QRCodeGenerator() {
                     )}
 
                     {activeTab === 'location' && (
-                      <QRForm type="location">
+                      <QRForm 
+                        type="location"
+                        fileUrl={fileUrl}
+                        onFileChange={(url) => setFileUrl(url || '')}
+                      >
                         <div className="space-y-4">
                           <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
@@ -501,7 +505,11 @@ export function QRCodeGenerator() {
                     )}
 
                     {activeTab === 'email' && (
-                      <QRForm type="email">
+                      <QRForm 
+                        type="email"
+                        fileUrl={fileUrl}
+                        onFileChange={(url) => setFileUrl(url || '')}
+                      >
                         <div className="space-y-4">
                           <div className="space-y-2">
                             <Label htmlFor="emailTo">To</Label>
@@ -541,7 +549,11 @@ export function QRCodeGenerator() {
                     )}
 
                     {activeTab === 'phone' && (
-                      <QRForm type="phone">
+                      <QRForm 
+                        type="phone"
+                        fileUrl={fileUrl}
+                        onFileChange={(url) => setFileUrl(url || '')}
+                      >
                         <div className="space-y-2">
                           <Label htmlFor="phoneNumber">Phone Number</Label>
                           <Input
@@ -558,7 +570,11 @@ export function QRCodeGenerator() {
                     )}
 
                     {activeTab === 'sms' && (
-                      <QRForm type="sms">
+                      <QRForm 
+                        type="sms"
+                        fileUrl={fileUrl}
+                        onFileChange={(url) => setFileUrl(url || '')}
+                      >
                         <div className="space-y-4">
                           <div className="space-y-2">
                             <Label htmlFor="smsNumber">Phone Number</Label>
@@ -588,7 +604,11 @@ export function QRCodeGenerator() {
                     )}
 
                     {activeTab === 'text' && (
-                      <QRForm type="text">
+                      <QRForm 
+                        type="text"
+                        fileUrl={fileUrl}
+                        onFileChange={(url) => setFileUrl(url || '')}
+                      >
                         <div className="space-y-2">
                           <Label htmlFor="text">Text Content</Label>
                           <textarea
@@ -607,7 +627,11 @@ export function QRCodeGenerator() {
                     )}
 
                     {activeTab === 'pdf' && (
-                      <QRForm type="pdf">
+                      <QRForm 
+                        type="pdf"
+                        fileUrl={fileUrl}
+                        onFileChange={(url) => setFileUrl(url || '')}
+                      >
                         <div className="space-y-4">
                           <div>
                             <Label htmlFor="file-upload">Upload PDF</Label>
@@ -654,7 +678,11 @@ export function QRCodeGenerator() {
                     )}
 
                     {activeTab === 'image' && (
-                      <QRForm type="image">
+                      <QRForm 
+                        type="image"
+                        fileUrl={fileUrl}
+                        onFileChange={(url) => setFileUrl(url || '')}
+                      >
                         <div className="space-y-4">
                           <div>
                             <Label htmlFor="file-upload">Upload Image</Label>
@@ -700,7 +728,11 @@ export function QRCodeGenerator() {
                     )}
 
                     {activeTab === 'video' && (
-                      <QRForm type="video">
+                      <QRForm 
+                        type="video"
+                        fileUrl={fileUrl}
+                        onFileChange={(url) => setFileUrl(url || '')}
+                      >
                         <div className="space-y-4">
                           <div>
                             <Label htmlFor="file-upload">Upload Video</Label>
@@ -746,7 +778,11 @@ export function QRCodeGenerator() {
                     )}
 
                     {activeTab === 'music' && (
-                      <QRForm type="music">
+                      <QRForm 
+                        type="music"
+                        fileUrl={fileUrl}
+                        onFileChange={(url) => setFileUrl(url || '')}
+                      >
                         <div className="space-y-4">
                           <div>
                             <Label htmlFor="file-upload">Upload Music</Label>

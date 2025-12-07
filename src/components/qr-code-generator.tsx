@@ -169,7 +169,24 @@ export function QRCodeGenerator() {
         }
       });
 
-      return await formAction(formData);
+      const result = await formAction(formData);
+      
+      // Reset form after successful submission
+      if (result.qrImageUrl) {
+        setFormValues({});
+        setFileUrl(undefined);
+        setSelectedFile(null);
+        if (filePreview) {
+          URL.revokeObjectURL(filePreview);
+          setFilePreview(null);
+        }
+        // Reset the form element
+        if (formRef.current) {
+          formRef.current.reset();
+        }
+      }
+      
+      return result;
     });
   };
   

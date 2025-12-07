@@ -20,10 +20,13 @@ export const FileUpload = ({
 }: FileUploadProps) => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  
   const { startUpload } = useUploadThing(endpoint, {
     onClientUploadComplete: (res: { url: string }[]) => {
       if (res && res[0]?.url) {
         onChange(res[0].url);
+        setError(null);
       }
       setIsUploading(false);
       setUploadProgress(0);
@@ -31,13 +34,26 @@ export const FileUpload = ({
     onUploadProgress: (progress: number) => {
       setUploadProgress(progress);
     },
+    onUploadError: (error: Error) => {
+      console.error('Upload error:', error);
+      setError(`Upload failed: ${error.message}`);
+      setIsUploading(false);
+      setUploadProgress(0);
+    }
   });
 
   const handleDrop = useCallback(
-    (acceptedFiles: File[]) => {
+    async (acceptedFiles: File[]) => {
       if (acceptedFiles.length > 0) {
-        setIsUploading(true);
-        startUpload(acceptedFiles);
+        try {
+          setError(null);
+          setIsUploading(true);
+          await startUpload(acceptedFiles);
+        } catch (err) {
+          console.error('Error in handleDrop:', err);
+          setError('Failed to upload file. Please try again.');
+          setIsUploading(false);
+        }
       }
     },
     [startUpload]

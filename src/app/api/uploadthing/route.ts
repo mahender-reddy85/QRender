@@ -5,6 +5,7 @@ import { ourFileRouter } from "./core";
 export const { GET, POST } = createRouteHandler({
   router: ourFileRouter,
   config: {
-    // Add your config here
+    // This is the URL of your Next.js app
+    callbackUrl: process.env.NEXTAUTH_URL || 'http://localhost:3000',
   },
 });

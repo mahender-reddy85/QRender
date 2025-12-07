@@ -122,21 +122,42 @@ export function QRCodeGenerator() {
   );
   // Form action that handles the submission with transition
   const handleFormAction = (formData: FormData) => {
-    startTransition(async () => {
+    return startTransition(async () => {
       formData.append('type', activeTab);
       
+      // Add the file URL if it exists (from FileUpload component)
+      if (fileUrl) {
+        formData.append('url', fileUrl);
+        
+        // Set the appropriate field based on the active tab
+        if (activeTab === 'pdf') {
+          formData.append('pdfUrl', fileUrl);
+        } else if (activeTab === 'image') {
+          formData.append('imageUrl', fileUrl);
+        } else if (activeTab === 'video') {
+          formData.append('videoUrl', fileUrl);
+        } else if (activeTab === 'music') {
+          formData.append('musicUrl', fileUrl);
+        }
+      }
+      
+      // Add the file directly if it was uploaded via file input
       if (selectedFile) {
         formData.append('file', selectedFile);
+        formData.append('filename', selectedFile.name);
       }
 
       // Add all form values to formData
       Object.entries(formValues).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
-          formData.set(key, value);
+          // Skip file objects as they're already handled
+          if (!(value instanceof File)) {
+            formData.set(key, String(value));
+          }
         }
       });
 
-      await formAction(formData);
+      return await formAction(formData);
     });
   };
   
@@ -153,6 +174,70 @@ export function QRCodeGenerator() {
       ...prev,
       [name]: value
     }));
+  };
+
+  const handleFileUpload = async (url: string) => {
+    setFileUrl(url);
+    
+    // Set the appropriate form value based on the active tab
+    let formValuesUpdate = {};
+    
+    if (activeTab === 'pdf') {
+      formValuesUpdate = {
+        pdfUrl: url,
+        text: url // Also set as text for backward compatibility
+      };
+    } else if (activeTab === 'image') {
+      formValuesUpdate = {
+        imageUrl: url,
+        text: url // Also set as text for backward compatibility
+      };
+    } else if (activeTab === 'video') {
+      formValuesUpdate = {
+        videoUrl: url,
+        text: url // Also set as text for backward compatibility
+      };
+    } else if (activeTab === 'music') {
+      formValuesUpdate = {
+        musicUrl: url,
+        text: url // Also set as text for backward compatibility
+      };
+    }
+    
+    // Update the form values
+    setFormValues(prev => ({
+      ...prev,
+      ...formValuesUpdate
+    }));
+    
+    // Create a new form data object
+    const formData = new FormData();
+    formData.append('type', activeTab);
+    formData.append('url', url);
+    
+    // Add the appropriate field based on the active tab
+    if (activeTab === 'pdf') {
+      formData.append('pdfUrl', url);
+    } else if (activeTab === 'image') {
+      formData.append('imageUrl', url);
+    } else if (activeTab === 'video') {
+      formData.append('videoUrl', url);
+    } else if (activeTab === 'music') {
+      formData.append('musicUrl', url);
+    }
+    
+    // Add color to form data
+    if (formValues.color) {
+      formData.append('color', formValues.color);
+    }
+    
+    // Submit the form
+    try {
+      await formAction(formData);
+      // The QR code will be shown automatically when state.qrImageUrl updates
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -181,10 +266,12 @@ export function QRCodeGenerator() {
         setFilePreview(URL.createObjectURL(file));
       }
       
+      // For direct file uploads (not using FileUpload component)
       const { name } = e.target;
       setFormValues(prev => ({
         ...prev,
-        [name]: file.name
+        [name]: file.name,
+        [`${name}File`]: file
       }));
     }
   };
@@ -355,6 +442,21 @@ export function QRCodeGenerator() {
                             className="w-full"
                             autoComplete="url"
                           />
+                        </div>
+                      </QRForm>
+                    )}
+
+                    {activeTab === 'pdf' && (
+                      <QRForm 
+                        type="pdf"
+                        fileUrl={fileUrl}
+                        onFileChange={handleFileUpload}
+                      >
+                        <div className="space-y-2">
+                          <Label>Upload PDF</Label>
+                          <p className="text-sm text-muted-foreground mb-2">
+                            Upload a PDF file to generate a QR code
+                          </p>
                         </div>
                       </QRForm>
                     )}
@@ -631,7 +733,7 @@ export function QRCodeGenerator() {
                       <QRForm 
                         type="image"
                         fileUrl={fileUrl}
-                        onFileChange={(url) => setFileUrl(url || '')}
+                        onFileChange={handleFileUpload}
                       >
                         <div className="space-y-2">
                           <Label>Upload Image</Label>
@@ -646,12 +748,12 @@ export function QRCodeGenerator() {
                       <QRForm 
                         type="video"
                         fileUrl={fileUrl}
-                        onFileChange={(url) => setFileUrl(url || '')}
+                        onFileChange={handleFileUpload}
                       >
                         <div className="space-y-2">
                           <Label>Upload Video</Label>
                           <p className="text-sm text-muted-foreground">
-                            Upload a video to generate a QR code
+                            Upload a video to generate a QR code (MP4, WebM, OGG up to 128MB)
                           </p>
                         </div>
                       </QRForm>
@@ -661,12 +763,12 @@ export function QRCodeGenerator() {
                       <QRForm 
                         type="pdf"
                         fileUrl={fileUrl}
-                        onFileChange={(url) => setFileUrl(url || '')}
+                        onFileChange={handleFileUpload}
                       >
                         <div className="space-y-2">
                           <Label>Upload PDF</Label>
                           <p className="text-sm text-muted-foreground">
-                            Upload a PDF file to generate a QR code
+                            Upload a PDF file to generate a QR code (up to 4MB)
                           </p>
                         </div>
                       </QRForm>
@@ -676,7 +778,7 @@ export function QRCodeGenerator() {
                       <QRForm 
                         type="audio"
                         fileUrl={fileUrl}
-                        onFileChange={(url) => setFileUrl(url || '')}
+                        onFileChange={handleFileUpload}
                       >
                         <div className="space-y-2">
                           <Label>Upload Music</Label>

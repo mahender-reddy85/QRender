@@ -3,7 +3,6 @@
 import { useCallback, useState, useMemo } from "react";
 import { useDropzone, type FileRejection } from "react-dropzone";
 import { Image as ImageIcon, Video, X, Music, FileText } from "lucide-react";
-import { Progress } from "./progress";
 import { useUploadThing } from "@/lib/uploadthing";
 import { cn } from "@/lib/utils";
 
@@ -45,7 +44,6 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   fileType = 'image',
   className
 }) => {
-  const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -57,10 +55,6 @@ export const FileUpload: React.FC<FileUploadProps> = ({
         if (onError) onError('');
       }
       setIsUploading(false);
-      setUploadProgress(0);
-    },
-    onUploadProgress: (progress: number) => {
-      setUploadProgress(progress);
     },
     onUploadError: (error: Error) => {
       console.error('Upload error:', error);
@@ -68,7 +62,6 @@ export const FileUpload: React.FC<FileUploadProps> = ({
       setError(errorMsg);
       if (onError) onError(errorMsg);
       setIsUploading(false);
-      setUploadProgress(0);
     }
   });
 
@@ -255,10 +248,12 @@ export const FileUpload: React.FC<FileUploadProps> = ({
           {fileType === 'pdf' && `Supports: ${FILE_TYPE_EXTENSIONS.pdf} (up to 4MB)`}
         </p>
         {isUploading && (
-          <div className="w-full max-w-xs mx-auto mt-4">
-            <Progress value={uploadProgress} className="h-2" />
-            <p className="mt-2 text-xs text-muted-foreground">
-              Uploading... {Math.round(uploadProgress)}%
+          <div className="w-full mt-2">
+            <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+              <div className="h-full bg-primary transition-all duration-300" style={{ width: '100%' }} />
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Uploading...
             </p>
           </div>
         )}

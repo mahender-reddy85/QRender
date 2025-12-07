@@ -25,13 +25,13 @@ const initialState: QRState = {
 const QRForm = ({ 
   type, 
   children, 
-  fileUrl, 
-  onFileChange 
+  fileUrl = '', 
+  onFileChange = () => {}
 }: { 
   type: string, 
-  children: React.ReactNode,
-  fileUrl: string,
-  onFileChange: (url?: string) => void
+  children?: React.ReactNode,
+  fileUrl?: string,
+  onFileChange?: (url?: string) => void
 }) => {
   const [color, setColor] = useState('#000000');
 

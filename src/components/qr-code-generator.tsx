@@ -169,33 +169,29 @@ export function QRCodeGenerator() {
         }
       });
 
-      const result = await formAction(formData);
-      
-      // Reset form after successful submission
-      if (result.qrImageUrl) {
-        setFormValues({});
-        setFileUrl(undefined);
-        setSelectedFile(null);
-        if (filePreview) {
-          URL.revokeObjectURL(filePreview);
-          setFilePreview(null);
-        }
-        // Reset the form element
-        if (formRef.current) {
-          formRef.current.reset();
-        }
-      }
-      
-      return result;
+      return await formAction(formData);
     });
   };
   
-  // Update local state when form state changes
+  // Update local state when form state changes and reset form on successful submission
   useEffect(() => {
     if (state.qrImageUrl) {
       setIsFlipped(true);
+      
+      // Reset form after successful submission
+      setFormValues({});
+      setFileUrl(undefined);
+      setSelectedFile(null);
+      if (filePreview) {
+        URL.revokeObjectURL(filePreview);
+        setFilePreview(null);
+      }
+      // Reset the form element
+      if (formRef.current) {
+        formRef.current.reset();
+      }
     }
-  }, [state]);
+  }, [state, filePreview]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;

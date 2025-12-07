@@ -458,21 +458,6 @@ export function QRCodeGenerator() {
                       </QRForm>
                     )}
 
-                    {activeTab === 'pdf' && (
-                      <QRForm 
-                        type="pdf"
-                        fileUrl={fileUrl}
-                        onFileChange={handleFileUpload}
-                      >
-                        <div className="space-y-2">
-                          <Label>Upload PDF</Label>
-                          <p className="text-sm text-muted-foreground mb-2">
-                            Upload a PDF file to generate a QR code
-                          </p>
-                        </div>
-                      </QRForm>
-                    )}
-
                     {activeTab === 'vcard' && (
                       <QRForm 
                         type="vcard"
@@ -776,14 +761,7 @@ export function QRCodeGenerator() {
                         type="pdf"
                         fileUrl={fileUrl}
                         onFileChange={handleFileUpload}
-                      >
-                        <div className="space-y-2">
-                          <Label>Upload PDF</Label>
-                          <p className="text-sm text-muted-foreground">
-                            Upload a PDF file to generate a QR code (up to 4MB)
-                          </p>
-                        </div>
-                      </QRForm>
+                      />
                     )}
 
                     {activeTab === 'music' && (

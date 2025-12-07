@@ -13,6 +13,16 @@ import { Mail, Phone, Globe, Type, Contact, Wifi as WifiIcon, MapPin, MessageSqu
 import { FileUpload } from './ui/file-upload';
 import { QRCodeDisplay } from './qr-code-display';
 
+// Type guard to check if value is a File
+const isFile = (value: unknown): value is File => {
+  return value instanceof File || 
+         (typeof value === 'object' && 
+          value !== null && 
+          'name' in value && 
+          'size' in value && 
+          'type' in value);
+};
+
 const initialState: QRState = {
   message: '',
   qrImageUrl: '',
@@ -110,8 +120,10 @@ export function QRCodeGenerator() {
   const [isFlipped, setIsFlipped] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
-  const [formValues, setFormValues] = useState<Record<string, string>>({});
-  const [fileUrl, setFileUrl] = useState<string>('');
+  // Update the type to allow File objects in form values
+  type FormValue = string | File | undefined;
+  const [formValues, setFormValues] = useState<Record<string, FormValue>>({});
+  const [fileUrl, setFileUrl] = useState<string | undefined>();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const [_, startTransition] = useTransition();
@@ -151,7 +163,7 @@ export function QRCodeGenerator() {
       Object.entries(formValues).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
           // Skip file objects as they're already handled
-          if (!(value instanceof File)) {
+          if (!isFile(value)) {
             formData.set(key, String(value));
           }
         }
@@ -173,10 +185,11 @@ export function QRCodeGenerator() {
     setFormValues(prev => ({
       ...prev,
       [name]: value
-    }));
+    } as Record<string, FormValue>));
   };
 
-  const handleFileUpload = async (url: string) => {
+  const handleFileUpload = async (url?: string) => {
+    if (!url) return;
     setFileUrl(url);
     
     // Set the appropriate form value based on the active tab
@@ -204,11 +217,11 @@ export function QRCodeGenerator() {
       };
     }
     
-    // Update the form values
+    // Update the form values with proper typing
     setFormValues(prev => ({
       ...prev,
-      ...formValuesUpdate
-    }));
+      ...(formValuesUpdate as Record<string, string>)
+    } as Record<string, FormValue>));
     
     // Create a new form data object
     const formData = new FormData();
@@ -248,22 +261,14 @@ export function QRCodeGenerator() {
       // Clean up previous preview if it exists
       if (filePreview) {
         URL.revokeObjectURL(filePreview);
-        setFilePreview(null);
       }
       
-      // Create preview based on file type
+      // Create preview for images
       if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setFilePreview(reader.result as string);
-        };
-        reader.readAsDataURL(file);
-      } else if (file.type.startsWith('video/')) {
-        setFilePreview(URL.createObjectURL(file));
-      } else if (file.type.startsWith('audio/')) {
-        setFilePreview(URL.createObjectURL(file));
-      } else if (file.type === 'application/pdf') {
-        setFilePreview(URL.createObjectURL(file));
+        const previewUrl = URL.createObjectURL(file);
+        setFilePreview(previewUrl);
+      } else {
+        setFilePreview(null);
       }
       
       // For direct file uploads (not using FileUpload component)

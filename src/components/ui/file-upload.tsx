@@ -8,21 +8,19 @@ import { useUploadThing } from "@/lib/uploadthing";
 import { cn } from "@/lib/utils";
 
 type FileUploadProps = {
-  onChange: (url?: string) => void;
+  onChange: (url: string) => void;
   value?: string;
-  endpoint: "imageUploader" | "pdfUploader" | "videoUploader";
 };
 
 export const FileUpload = ({
   onChange,
   value,
-  endpoint,
 }: FileUploadProps) => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  const { startUpload } = useUploadThing(endpoint, {
+  const { startUpload } = useUploadThing("fileUploader" as any, {
     onClientUploadComplete: (res: { url: string }[]) => {
       if (res && res[0]?.url) {
         onChange(res[0].url);
@@ -62,14 +60,10 @@ export const FileUpload = ({
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: handleDrop,
     accept: {
-      'image/png': ['.png'],
-      'image/jpeg': ['.jpg', '.jpeg'],
-      'image/gif': ['.gif'],
-      'image/webp': ['.webp'],
+      'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp'],
       'application/pdf': ['.pdf'],
-      'video/mp4': ['.mp4'],
-      'video/webm': ['.webm'],
-      'video/quicktime': ['.mov'],
+      'video/*': ['.mp4', '.webm', '.ogg'],
+      'audio/*': ['.mp3', '.wav', '.ogg', '.m4a'],
     },
     maxFiles: 1,
     disabled: isUploading,
@@ -130,30 +124,17 @@ export const FileUpload = ({
     >
       <input {...getInputProps()} />
       <div className="flex flex-col items-center justify-center space-y-2">
-        {endpoint === "imageUploader" ? (
-          <ImageIcon className="w-10 h-10 text-muted-foreground" />
-        ) : endpoint === "pdfUploader" ? (
-          <FileText className="w-10 h-10 text-muted-foreground" />
-        ) : (
-          <Video className="w-10 h-10 text-muted-foreground" />
-        )}
+        <FileText className="w-10 h-10 text-muted-foreground" />
         <p className="text-sm text-muted-foreground">
           {isDragActive
             ? "Drop the file here..."
-            : `Drag & drop ${
-                endpoint === "imageUploader"
-                  ? "an image"
-                  : endpoint === "pdfUploader"
-                  ? "a PDF"
-                  : "a video"
-              } here, or click to select`}
+            : "Drag & drop a file here, or click to select"}
         </p>
-        <p className="text-xs text-muted-foreground">
-          {endpoint === "imageUploader"
-            ? "Supports JPG, PNG, GIF, WEBP (max 4MB)"
-            : endpoint === "pdfUploader"
-            ? "PDF (max 16MB)"
-            : "Supports MP4, WebM, OGG (max 128MB)"}
+        <p className="text-xs text-muted-foreground text-center">
+          Supports: Images (JPG, PNG, GIF, WEBP up to 4MB),<br/>
+          PDFs (up to 16MB),<br/>
+          Videos (MP4, WebM, OGG up to 128MB),<br/>
+          Audio (MP3, WAV, OGG, M4A up to 32MB)
         </p>
         {isUploading && (
           <div className="w-full max-w-xs mx-auto mt-4">

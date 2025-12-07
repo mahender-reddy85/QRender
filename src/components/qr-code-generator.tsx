@@ -36,13 +36,12 @@ const QRForm = ({
   const [color, setColor] = useState('#000000');
 
   const renderFileUpload = () => {
-    if (type === 'image' || type === 'pdf' || type === 'video') {
+    if (type === 'image' || type === 'pdf' || type === 'video' || type === 'audio') {
       return (
         <div className="mt-4">
           <FileUpload
-            endpoint={`${type}Uploader`}
             value={fileUrl}
-            onChange={onFileChange}
+            onChange={(url) => onFileChange?.(url)}
           />
         </div>
       );

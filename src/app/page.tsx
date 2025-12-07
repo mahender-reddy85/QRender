@@ -2,6 +2,7 @@
 
 import { Suspense } from 'react';
 import { ThemeToggle } from "@/components/theme-toggle";
+import { GradientText } from "@/components/ui/gradient-text";
 import dynamic from 'next/dynamic';
 
 // Create a client component that will be rendered on the client
@@ -24,9 +25,14 @@ export default function HomePage() {
         <ThemeToggle />
       </div>
       <section className="relative text-center mb-8">
-        <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent mb-4">
+        <GradientText 
+          colors={["#40ffaa", "#4079ff", "#40ffaa", "#4079ff", "#40ffaa"]}
+          animationSpeed={3}
+          showBorder={false}
+          className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-4"
+        >
           QRender
-        </h1>
+        </GradientText>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
           Create, customize, and manage your QR codes instantly.
         </p>

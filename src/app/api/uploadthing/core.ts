@@ -11,7 +11,7 @@ export const ourFileRouter = {
     video: { maxFileSize: "128MB", maxFileCount: 1 },
     audio: { maxFileSize: "32MB", maxFileCount: 1 },
   })
-    .onUploadComplete(async ({ file, metadata }) => {
+    .onUploadComplete(async ({ file }) => {
       try {
         console.log("UPLOAD COMPLETE:", file.ufsUrl);
         return {

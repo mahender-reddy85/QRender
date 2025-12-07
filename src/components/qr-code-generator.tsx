@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useOptimistic, startTransition } from 'react';
+import React, { useState, useRef, useEffect, useTransition } from 'react';
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import type { QRState } from '@/lib/definitions';
@@ -8,13 +8,9 @@ import { generateQrCode } from '@/lib/actions';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Slider } from './ui/slider';
 import { cn } from '@/lib/utils';
-import { Wand2, RotateCcw, Wifi, MapPin, Mail, Phone, MessageSquare, Globe, Type, Contact, Wifi as WifiIcon, FileText, Image as ImageIcon, Play, Music, Upload, Menu, X } from 'lucide-react';
+import { Mail, Phone, Globe, Type, Contact, Wifi as WifiIcon, MapPin, MessageSquare, FileText, Play, Music, Upload, Menu, X, Image as ImageIcon } from 'lucide-react';
 import { FileUpload } from './ui/file-upload';
-import { Alert, AlertDescription } from './ui/alert';
-import { AlertCircle } from 'lucide-react';
-import Link from 'next/link';
 import { QRCodeDisplay } from './qr-code-display';
 
 const initialState: QRState = {
@@ -35,7 +31,7 @@ const QRForm = ({
   type: string, 
   children: React.ReactNode,
   fileUrl: string,
-  onFileChange: (url: string) => void
+  onFileChange: (url?: string) => void
 }) => {
   const [color, setColor] = useState('#000000');
 
@@ -118,34 +114,30 @@ export function QRCodeGenerator() {
   const [fileUrl, setFileUrl] = useState<string>('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+  const [isPending, startTransition] = useTransition();
   
   const [state, formAction] = useActionState<QRState, FormData>(
     generateQrCode,
     initialState
   );
-  const [isPending, setIsPending] = useState(false);
-  
-  // Create a form action that handles the pending state
-  const handleFormAction = async (formData: FormData) => {
-    setIsPending(true);
-    formData.append('type', activeTab);
-    
-    if (selectedFile) {
-      formData.append('file', selectedFile);
-    }
-
-    // Add all form values to formData
-    Object.entries(formValues).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        formData.set(key, value);
+  // Form action that handles the submission with transition
+  const handleFormAction = (formData: FormData) => {
+    startTransition(async () => {
+      formData.append('type', activeTab);
+      
+      if (selectedFile) {
+        formData.append('file', selectedFile);
       }
-    });
 
-    try {
+      // Add all form values to formData
+      Object.entries(formValues).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.set(key, value);
+        }
+      });
+
       await formAction(formData);
-    } finally {
-      setIsPending(false);
-    }
+    });
   };
   
   // Update local state when form state changes

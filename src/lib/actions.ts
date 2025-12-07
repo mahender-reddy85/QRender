@@ -85,7 +85,7 @@ const ImageSchema = BaseQRFormSchema.extend({
 
 import { QRState } from './definitions';
 
-export async function generateQrCode(prevState: QRState, formData: FormData): Promise<QRState> {
+export async function generateQrCode(_prevState: QRState, formData: FormData): Promise<QRState> {
   try {
     const data = Object.fromEntries(formData.entries());
     const type = data.type as string;

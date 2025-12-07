@@ -25,9 +25,9 @@ export const FileUpload = ({
   const [error, setError] = useState<string | null>(null);
   
   const { startUpload } = useUploadThing("fileUploader" as any, {
-    onClientUploadComplete: (res: { url: string }[]) => {
-      if (res && res[0]?.url) {
-        onChange(res[0].url);
+    onClientUploadComplete: (res: { ufsUrl: string }[]) => {
+      if (res && res[0]?.ufsUrl) {
+        onChange(res[0].ufsUrl);
         setError(null);
       }
       setIsUploading(false);

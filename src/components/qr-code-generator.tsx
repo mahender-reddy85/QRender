@@ -188,6 +188,13 @@ export function QRCodeGenerator() {
     } as Record<string, FormValue>));
   };
 
+  // Helper function to safely get string values from form values
+  const getStringValue = (key: string, defaultValue: string = ''): string => {
+    const value = formValues[key];
+    if (value === undefined || value === null) return defaultValue;
+    return String(value); // Convert to string for any non-undefined, non-null value
+  };
+
   const handleFileUpload = async (url?: string) => {
     if (!url) return;
     setFileUrl(url);
@@ -440,7 +447,7 @@ export function QRCodeGenerator() {
                             id="text"
                             name="text"
                             type="url"
-                            value={formValues['text'] || ''}
+                            value={getStringValue('text')}
                             onChange={handleInputChange}
                             placeholder="https://example.com"
                             required
@@ -479,7 +486,7 @@ export function QRCodeGenerator() {
                               <Input 
                                 id="firstName" 
                                 name="firstName" 
-                                value={formValues['firstName'] || ''}
+                                value={getStringValue('firstName')}
                                 onChange={handleInputChange}
                                 placeholder="John"
                                 required 
@@ -490,7 +497,7 @@ export function QRCodeGenerator() {
                               <Input 
                                 id="lastName" 
                                 name="lastName" 
-                                value={formValues['lastName'] || ''}
+                                value={getStringValue('lastName')}
                                 onChange={handleInputChange}
                                 placeholder="Doe"
                                 required 
@@ -503,7 +510,7 @@ export function QRCodeGenerator() {
                               id="phone" 
                               name="phone" 
                               type="tel" 
-                              value={formValues['phone'] || ''}
+                              value={getStringValue('phone')}
                               onChange={handleInputChange}
                               placeholder="+1 234 567 8900"
                               required 
@@ -515,7 +522,7 @@ export function QRCodeGenerator() {
                               id="email" 
                               name="email" 
                               type="email" 
-                              value={formValues['email'] || ''}
+                              value={getStringValue('email')}
                               onChange={handleInputChange}
                               placeholder="john.doe@example.com"
                             />
@@ -536,7 +543,7 @@ export function QRCodeGenerator() {
                             <Input 
                               id="ssid" 
                               name="ssid" 
-                              value={formValues['ssid'] || ''}
+                              value={getStringValue('ssid')}
                               onChange={handleInputChange}
                               placeholder="MyWiFiNetwork"
                               required 
@@ -548,7 +555,7 @@ export function QRCodeGenerator() {
                               id="password" 
                               name="password" 
                               type="password" 
-                              value={formValues['password'] || ''}
+                              value={getStringValue('password')}
                               onChange={handleInputChange}
                               placeholder="Enter WiFi password"
                               required 
@@ -559,7 +566,7 @@ export function QRCodeGenerator() {
                             <select 
                               id="security" 
                               name="security" 
-                              value={formValues['security'] || 'WPA'}
+                              value={getStringValue('security') || 'WPA'}
                               onChange={handleInputChange}
                               className="w-full p-2 border rounded"
                             >
@@ -587,7 +594,7 @@ export function QRCodeGenerator() {
                               name="latitude"
                               type="number"
                               step="any"
-                              value={formValues['latitude'] || ''}
+                              value={getStringValue('latitude')}
                               onChange={handleInputChange}
                               placeholder="40.7128"
                               required
@@ -600,7 +607,7 @@ export function QRCodeGenerator() {
                               name="longitude"
                               type="number"
                               step="any"
-                              value={formValues['longitude'] || ''}
+                              value={getStringValue('longitude')}
                               onChange={handleInputChange}
                               placeholder="-74.0060"
                               required
@@ -624,7 +631,7 @@ export function QRCodeGenerator() {
                               id="emailTo"
                               name="to"
                               type="email"
-                              value={formValues['to'] || ''}
+                              value={getStringValue('to')}
                               onChange={handleInputChange}
                               placeholder="recipient@example.com"
                               required
@@ -635,7 +642,7 @@ export function QRCodeGenerator() {
                             <Input
                               id="emailSubject"
                               name="subject"
-                              value={formValues['subject'] || ''}
+                              value={getStringValue('subject')}
                               onChange={handleInputChange}
                               placeholder="Subject"
                             />
@@ -645,7 +652,7 @@ export function QRCodeGenerator() {
                             <textarea
                               id="emailBody"
                               name="body"
-                              value={formValues['body'] || ''}
+                              value={getStringValue('body')}
                               onChange={handleInputChange}
                               rows={3}
                               className="w-full p-2 border rounded"
@@ -667,7 +674,7 @@ export function QRCodeGenerator() {
                               id="phoneNumber"
                               name="phone"
                               type="tel"
-                              value={formValues['phone'] || ''}
+                              value={getStringValue('phone')}
                               onChange={handleInputChange}
                               placeholder="+1234567890"
                               required
@@ -678,7 +685,7 @@ export function QRCodeGenerator() {
                             <textarea
                               id="smsMessage"
                               name="sms"
-                              value={formValues['sms'] || ''}
+                              value={getStringValue('sms')}
                               onChange={handleInputChange}
                               rows={3}
                               className="w-full p-2 border rounded"
@@ -701,7 +708,7 @@ export function QRCodeGenerator() {
                               id="phoneNumber"
                               name="phone"
                               type="tel"
-                              value={formValues['phone'] || ''}
+                              value={getStringValue('phone')}
                               onChange={handleInputChange}
                               placeholder="+1234567890"
                               required
@@ -722,7 +729,7 @@ export function QRCodeGenerator() {
                           <textarea
                             id="text"
                             name="text"
-                            value={formValues['text'] || ''}
+                            value={getStringValue('text')}
                             onChange={handleInputChange}
                             rows={4}
                             className="w-full p-2 border rounded"

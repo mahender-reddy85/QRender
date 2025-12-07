@@ -813,7 +813,7 @@ export function QRCodeGenerator() {
                 <div className="flex flex-col items-center space-y-6 w-full">
                   <QRCodeDisplay 
                     imageUrl={state.qrImageUrl}
-                    text={formValues['text'] || formValues['ssid'] || formValues['phone'] || 'QR Code'}
+                    text={String(formValues['text'] || formValues['ssid'] || formValues['phone'] || 'QR Code')}
                     className="w-64 h-64"
                     onCreateAnother={handleReset}
                   />

@@ -161,7 +161,7 @@ export function QRCodeGenerator() {
 
       // Add all form values to formData
       Object.entries(formValues).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
+        if (value !== undefined && value !== null && value !== '') {
           // Skip file objects as they're already handled
           if (!isFile(value)) {
             formData.set(key, String(value));
@@ -511,7 +511,7 @@ export function QRCodeGenerator() {
                               value={getStringValue('phone')}
                               onChange={handleInputChange}
                               placeholder="+1 234 567 8900"
-                              required 
+                              required
                             />
                           </div>
                           <div className="space-y-2">

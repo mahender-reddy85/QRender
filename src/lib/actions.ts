@@ -37,8 +37,11 @@ const SMSSchema = BaseQRFormSchema.extend({
 const VCardSchema = BaseQRFormSchema.extend({
   firstName: z.string().min(1, 'First name is required.'),
   lastName: z.string().min(1, 'Last name is required.'),
-  phone: z.string().optional(),
-  email: z.string().email('Invalid email for vCard.').optional(),
+  phone: z.string().min(1, 'Phone number is required.'),
+  email: z.union([
+    z.string().length(0), // Allow empty string
+    z.string().email('Invalid email for vCard.')
+  ]).optional().transform(e => e === "" ? undefined : e),
   organization: z.string().optional(),
   title: z.string().optional(),
   website: z.string().url('Invalid website URL').optional(),

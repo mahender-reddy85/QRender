@@ -11,6 +11,7 @@ import { Label } from './ui/label';
 import { Slider } from './ui/slider';
 import { cn } from '@/lib/utils';
 import { Wand2, RotateCcw, Wifi, MapPin, Mail, Phone, MessageSquare, Globe, Type, Contact, Wifi as WifiIcon, FileText, Image as ImageIcon, Play, Music, Upload, Menu, X } from 'lucide-react';
+import { FileUpload } from './ui/file-upload';
 import { Alert, AlertDescription } from './ui/alert';
 import { AlertCircle } from 'lucide-react';
 import Link from 'next/link';
@@ -25,9 +26,23 @@ const initialState: QRState = {
   errors: {},
 };
 
-
 const QRForm = ({ type, children }: { type: string, children: React.ReactNode }) => {
   const [color, setColor] = useState('#000000');
+
+  const renderFileUpload = () => {
+    if (type === 'image' || type === 'pdf' || type === 'video') {
+      return (
+        <div className="mt-4">
+          <FileUpload
+            endpoint={`${type}Uploader`}
+            value={fileUrl}
+            onChange={(url) => setFileUrl(url || '')}
+          />
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className="space-y-6">
@@ -54,6 +69,7 @@ const QRForm = ({ type, children }: { type: string, children: React.ReactNode })
           </div>
         </div>
       </div>
+      {renderFileUpload()}
     </div>
   )
 }
@@ -89,6 +105,7 @@ export function QRCodeGenerator() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
   const [formValues, setFormValues] = useState<Record<string, string>>({});
+  const [fileUrl, setFileUrl] = useState<string>('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   

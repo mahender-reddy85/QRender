@@ -54,25 +54,8 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        IconLeft: undefined, // Remove the old icon components
-        IconRight: undefined, // Remove the old icon components
-        Button: (buttonProps) => {
-          if (buttonProps.name === 'prev') {
-            return (
-              <button {...buttonProps} type="button">
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-            );
-          }
-          if (buttonProps.name === 'next') {
-            return (
-              <button {...buttonProps} type="button">
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            );
-          }
-          return <button {...buttonProps} type="button" />;
-        },
+        IconLeft: ({ ...props }) => <ChevronLeft className="h-4 w-4" {...props} />,
+        IconRight: ({ ...props }) => <ChevronRight className="h-4 w-4" {...props} />,
       }}
       {...props}
     />

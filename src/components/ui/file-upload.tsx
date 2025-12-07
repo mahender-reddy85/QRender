@@ -2,10 +2,10 @@
 
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { Upload, FileText, Image as ImageIcon, Video, X } from "lucide-react";
-import { Button } from "./button";
+import { FileText, Image as ImageIcon, Video, X } from "lucide-react";
 import { Progress } from "./progress";
 import { useUploadThing } from "@/lib/uploadthing";
+import { cn } from "@/lib/utils";
 
 type FileUploadProps = {
   onChange: (url?: string) => void;
@@ -21,14 +21,14 @@ export const FileUpload = ({
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const { startUpload } = useUploadThing(endpoint, {
-    onClientUploadComplete: (res) => {
+    onClientUploadComplete: (res: { url: string }[]) => {
       if (res && res[0]?.url) {
         onChange(res[0].url);
       }
       setIsUploading(false);
       setUploadProgress(0);
     },
-    onUploadProgress: (progress) => {
+    onUploadProgress: (progress: number) => {
       setUploadProgress(progress);
     },
   });

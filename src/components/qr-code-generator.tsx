@@ -26,7 +26,17 @@ const initialState: QRState = {
   errors: {},
 };
 
-const QRForm = ({ type, children }: { type: string, children: React.ReactNode }) => {
+const QRForm = ({ 
+  type, 
+  children, 
+  fileUrl, 
+  onFileChange 
+}: { 
+  type: string, 
+  children: React.ReactNode,
+  fileUrl: string,
+  onFileChange: (url: string) => void
+}) => {
   const [color, setColor] = useState('#000000');
 
   const renderFileUpload = () => {
@@ -36,7 +46,7 @@ const QRForm = ({ type, children }: { type: string, children: React.ReactNode })
           <FileUpload
             endpoint={`${type}Uploader`}
             value={fileUrl}
-            onChange={(url) => setFileUrl(url || '')}
+            onChange={onFileChange}
           />
         </div>
       );
@@ -335,7 +345,11 @@ export function QRCodeGenerator() {
                 <div className="bg-card p-6 rounded-lg border w-full">
                   <form action={handleFormAction} ref={formRef} className="space-y-6">
                     {activeTab === 'website' && (
-                      <QRForm type="website">
+                      <QRForm 
+                        type="website"
+                        fileUrl={fileUrl}
+                        onFileChange={(url) => setFileUrl(url || '')}
+                      >
                         <div className="space-y-2">
                           <Label htmlFor="url">Website URL</Label>
                           <Input
@@ -354,7 +368,11 @@ export function QRCodeGenerator() {
                     )}
 
                     {activeTab === 'vcard' && (
-                      <QRForm type="vcard">
+                      <QRForm 
+                        type="vcard"
+                        fileUrl={fileUrl}
+                        onFileChange={(url) => setFileUrl(url || '')}
+                      >
                         <div className="space-y-4">
                           <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
@@ -408,7 +426,11 @@ export function QRCodeGenerator() {
                     )}
 
                     {activeTab === 'wifi' && (
-                      <QRForm type="wifi">
+                      <QRForm 
+                        type="wifi"
+                        fileUrl={fileUrl}
+                        onFileChange={(url) => setFileUrl(url || '')}
+                      >
                         <div className="space-y-4">
                           <div className="space-y-2">
                             <Label htmlFor="ssid">Network Name (SSID)</Label>

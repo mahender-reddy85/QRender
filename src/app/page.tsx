@@ -4,10 +4,18 @@ import { Suspense } from 'react';
 import { ThemeToggle } from "@/components/theme-toggle";
 import dynamic from 'next/dynamic';
 
-const QRCodeGenerator = dynamic(
-  () => import('@/components/qr-code-generator').then((mod) => mod.QRCodeGenerator),
-  { ssr: false, loading: () => <div>Loading QR Code Generator...</div> }
-);
+// Create a client component that will be rendered on the client
+function QRCodeGeneratorClient() {
+  const QRCodeGenerator = dynamic<{}>(
+    () => import('@/components/qr-code-generator').then(mod => mod.QRCodeGenerator),
+    { 
+      ssr: false, 
+      loading: () => <div>Loading QR Code Generator...</div> 
+    }
+  );
+
+  return <QRCodeGenerator />;
+}
 
 export default function HomePage() {
   return (
@@ -25,7 +33,7 @@ export default function HomePage() {
       </section>
 
       <Suspense fallback={<div>Loading QR Code Generator...</div>}>
-        <QRCodeGenerator />
+        <QRCodeGeneratorClient />
       </Suspense>
     </main>
   );

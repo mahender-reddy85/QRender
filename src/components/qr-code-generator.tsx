@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useState, useRef, useTransition, useEffect } from 'react';
-import { generateQrCode } from '@/lib/actions';
+import React, { useState, useRef, useEffect, useOptimistic, startTransition } from 'react';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import type { QRState } from '@/lib/definitions';
+import { generateQrCode } from '@/lib/actions';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -71,16 +73,60 @@ const tabs = [
   { id: 'music', label: 'Music', icon: <Music className="w-4 h-4 mr-2" /> },
 ];
 
+function SubmitButton() {
+  // @ts-ignore - useFormStatus is not in the React types yet
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" disabled={pending} className="w-full">
+      {pending ? 'Generating...' : 'Generate QR Code'}
+    </Button>
+  );
+}
+
 export function QRCodeGenerator() {
-  const [isPending, startTransition] = useTransition();
   const [activeTab, setActiveTab] = useState("website");
   const [isFlipped, setIsFlipped] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
-  const [qrState, setQrState] = useState<QRState>(initialState);
   const [formValues, setFormValues] = useState<Record<string, string>>({});
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+  
+  const [state, formAction] = useActionState<QRState, FormData>(
+    generateQrCode,
+    initialState
+  );
+  const [isPending, setIsPending] = useState(false);
+  
+  // Create a form action that handles the pending state
+  const handleFormAction = async (formData: FormData) => {
+    setIsPending(true);
+    formData.append('type', activeTab);
+    
+    if (selectedFile) {
+      formData.append('file', selectedFile);
+    }
+
+    // Add all form values to formData
+    Object.entries(formValues).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        formData.set(key, value);
+      }
+    });
+
+    try {
+      await formAction(formData);
+    } finally {
+      setIsPending(false);
+    }
+  };
+  
+  // Update local state when form state changes
+  useEffect(() => {
+    if (state.qrImageUrl) {
+      setIsFlipped(true);
+    }
+  }, [state]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -155,9 +201,13 @@ export function QRCodeGenerator() {
 
   const handleReset = () => {
     setIsFlipped(false);
-    setQrState(initialState);
     setSelectedFile(null);
-    // Don't reset the form here, just clear the file input if it exists
+    setFilePreview(null);
+    // Reset form if it exists
+    if (formRef.current) {
+      formRef.current.reset();
+    }
+    // Clear file input if it exists
     const fileInput = formRef.current?.querySelector('input[type="file"]') as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
@@ -266,32 +316,7 @@ export function QRCodeGenerator() {
 
                 {/* Form Content */}
                 <div className="bg-card p-6 rounded-lg border w-full">
-                  <form onSubmit={(e) => {
-                    e.preventDefault();
-                    const formData = new FormData(e.currentTarget);
-                    formData.append('type', activeTab);
-                    
-                    if (selectedFile) {
-                      formData.append('file', selectedFile);
-                    }
-
-                    // Add all form values to formData
-                    Object.entries(formValues).forEach(([key, value]) => {
-                      if (value !== undefined && value !== null) {
-                        formData.set(key, value);
-                      }
-                    });
-
-                    startTransition(async () => {
-                      const result = await generateQrCode(qrState, formData);
-                      if (result.qrImageUrl) {
-                        setQrState(result);
-                        setIsFlipped(true);
-                      } else {
-                        setQrState(prev => ({ ...prev, ...result }));
-                      }
-                    });
-                  }} ref={formRef} className="space-y-6">
+                  <form action={handleFormAction} ref={formRef} className="space-y-6">
                     {activeTab === 'website' && (
                       <QRForm type="website">
                         <div className="space-y-2">
@@ -746,20 +771,7 @@ export function QRCodeGenerator() {
                     )}
                     
                     <div className="pt-4">
-                      <Button 
-                        type="submit" 
-                        className="w-full" 
-                        disabled={isPending}
-                      >
-                        {isPending ? (
-                          'Generating...'
-                        ) : (
-                          <>
-                            <Wand2 className="mr-2 h-4 w-4" />
-                            Generate QR Code
-                          </>
-                        )}
-                      </Button>
+                      <SubmitButton />
                     </div>
                   </form>
                 </div>
@@ -767,15 +779,17 @@ export function QRCodeGenerator() {
             </div>
 
             {/* Back of the card - QR Code */}
-            {qrState.qrImageUrl && (
+          {state.message && !state.qrImageUrl && (
               <div className="card-face card-back w-full h-full">
                 <div className="w-full h-full p-6">
-                  <QRCodeDisplay 
-                    imageUrl={qrState.qrImageUrl} 
-                    text={qrState.text || 'QR Code'}
-                    className="w-full max-w-xs mx-auto"
-                    onCreateAnother={handleReset}
-                  />
+                  {state.qrImageUrl && (
+                    <QRCodeDisplay 
+                      imageUrl={state.qrImageUrl}
+                      text={state.text || 'QR Code'}
+                      className="w-full max-w-xs mx-auto"
+                      onCreateAnother={handleReset}
+                    />
+                  )}
                 </div>
               </div>
             )}

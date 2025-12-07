@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 
 type QRCodeDisplayProps = {
   imageUrl: string;
-  text: string;
+  text?: string;
   className?: string;
   showActions?: boolean;
   onCreateAnother?: () => void;
@@ -36,7 +36,7 @@ export function QRCodeDisplay({
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `qrcode-${text.slice(0,20).replace(/\s/g, '_')}.png`;
+      a.download = `qrcode-${text ? text.slice(0,20).replace(/\s/g, '_') : 'qrcode'}.png`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -99,7 +99,7 @@ export function QRCodeDisplay({
       <div className="relative p-2 bg-white rounded">
         <img
           src={imageUrl}
-          alt={`QR Code for ${text}`}
+          alt={text ? `QR Code for ${text}` : 'QR Code'}
           className="w-full max-w-[256px] h-auto aspect-square"
         />
       </div>

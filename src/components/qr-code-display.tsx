@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { Button } from './ui/button';
 import { Download, Share2, Loader2, RotateCcw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -97,18 +96,17 @@ export function QRCodeDisplay({
   return (
     <div className={cn("flex flex-col items-center justify-center space-y-6 p-6 rounded-lg bg-card text-card-foreground shadow-sm border border-border w-full max-w-md mx-auto", className)}>
       <div className="relative p-2 bg-white rounded w-full flex justify-center">
-        <Image
+        <img
           src={imageUrl}
           alt={`QR Code${text ? ` for ${text}` : ''}`}
           className="w-full h-auto max-h-[300px] object-contain"
           width={300}
           height={300}
-          unoptimized={imageUrl.startsWith('blob:') || imageUrl.startsWith('data:')}
           onError={(e) => {
-            // Fallback to img if Image component fails
             const img = e.target as HTMLImageElement;
             img.onerror = null;
-            img.src = imageUrl;
+            // Add a timestamp to force reload if the image fails
+            img.src = `${imageUrl}${imageUrl.includes('?') ? '&' : '?'}t=${Date.now()}`;
           }}
         />
       </div>

@@ -168,8 +168,9 @@ export async function generateQrCode(_prevState: QRState, formData: FormData): P
           pdfUrl: data.file || data.pdfUrl,
         });
         if (validatedFields.success) {
-          qrContent = validatedFields.data.pdfUrl || '';
-          displayText = 'PDF Document';
+          const fileUrl = validatedFields.data.pdfUrl || '';
+          qrContent = fileUrl;
+          displayText = fileUrl.split('/').pop() || 'PDF Document';
         }
         break;
       case 'location':
@@ -181,24 +182,36 @@ export async function generateQrCode(_prevState: QRState, formData: FormData): P
         }
         break;
       case 'video':
-        validatedFields = VideoSchema.safeParse(data);
+        validatedFields = VideoSchema.safeParse({
+          ...data,
+          videoUrl: data.file || data.videoUrl,
+        });
         if (validatedFields.success) {
-          qrContent = validatedFields.data.videoUrl || 'Video File';
-          displayText = 'Video';
+          const fileUrl = validatedFields.data.videoUrl || '';
+          qrContent = fileUrl;
+          displayText = fileUrl.split('/').pop() || 'Video';
         }
         break;
       case 'music':
-        validatedFields = MusicSchema.safeParse(data);
+        validatedFields = MusicSchema.safeParse({
+          ...data,
+          musicUrl: data.file || data.musicUrl,
+        });
         if (validatedFields.success) {
-          qrContent = validatedFields.data.musicUrl || 'Music File';
-          displayText = 'Music';
+          const fileUrl = validatedFields.data.musicUrl || '';
+          qrContent = fileUrl;
+          displayText = fileUrl.split('/').pop() || 'Audio';
         }
         break;
       case 'image':
-        validatedFields = ImageSchema.safeParse(data);
+        validatedFields = ImageSchema.safeParse({
+          ...data,
+          imageUrl: data.file || data.imageUrl,
+        });
         if (validatedFields.success) {
-          qrContent = validatedFields.data.imageUrl || 'Image File';
-          displayText = 'Image';
+          const fileUrl = validatedFields.data.imageUrl || '';
+          qrContent = fileUrl;
+          displayText = fileUrl.split('/').pop() || 'Image';
         }
         break;
       default:

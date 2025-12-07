@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { FileText, Image as ImageIcon, Video, X } from "lucide-react";
+import { Image as ImageIcon, Video, X, Upload as UploadIcon, FileText } from "lucide-react";
 import { Progress } from "./progress";
 import { useUploadThing } from "@/lib/uploadthing";
 import { cn } from "@/lib/utils";
@@ -71,8 +71,8 @@ export const FileUpload = ({
 
   const fileType = value?.split(".").pop();
   const isImage = fileType?.match(/(jpg|jpeg|png|gif|webp)$/);
-  const isPDF = fileType === "pdf";
   const isVideo = fileType?.match(/(mp4|webm|mov|ogg)$/);
+  const isPDF = fileType?.toLowerCase() === 'pdf';
 
   if (value) {
     return (
@@ -86,14 +86,6 @@ export const FileUpload = ({
             />
           </div>
         )}
-        {isPDF && (
-          <div className="flex flex-col items-center p-4">
-            <FileText className="w-10 h-10 text-muted-foreground" />
-            <p className="mt-2 text-sm text-muted-foreground">
-              {value.split("/").pop()}
-            </p>
-          </div>
-        )}
         {isVideo && (
           <div className="w-full">
             <video
@@ -101,6 +93,22 @@ export const FileUpload = ({
               className="w-full rounded-md"
               controls
             />
+          </div>
+        )}
+        {isPDF && (
+          <div className="flex flex-col items-center p-4">
+            <FileText className="w-12 h-12 text-red-500 mb-2" />
+            <p className="text-sm text-muted-foreground">
+              {value.split("/").pop()}
+            </p>
+            <a 
+              href={value} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="mt-2 text-sm text-blue-500 hover:underline"
+            >
+              View PDF
+            </a>
           </div>
         )}
         <button
@@ -124,7 +132,7 @@ export const FileUpload = ({
     >
       <input {...getInputProps()} />
       <div className="flex flex-col items-center justify-center space-y-2">
-        <FileText className="w-10 h-10 text-muted-foreground" />
+        <UploadIcon className="w-10 h-10 text-muted-foreground" />
         <p className="text-sm text-muted-foreground">
           {isDragActive
             ? "Drop the file here..."
@@ -132,8 +140,7 @@ export const FileUpload = ({
         </p>
         <p className="text-xs text-muted-foreground text-center">
           Supports: Images (JPG, PNG, GIF, WEBP up to 4MB),<br/>
-          PDFs (up to 16MB),<br/>
-          Videos (MP4, WebM, OGG up to 128MB),<br/>
+Videos (MP4, WebM, OGG up to 128MB),<br/>
           Audio (MP3, WAV, OGG, M4A up to 32MB)
         </p>
         {isUploading && (

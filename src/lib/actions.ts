@@ -51,9 +51,11 @@ const WifiSchema = BaseQRFormSchema.extend({
   encryption: z.string().optional(),
 });
 const PDFSchema = BaseQRFormSchema.extend({
-  pdfFile: z.any().refine((file) => file && file.size > 0, {
-    message: "PDF file is required.",
-  }),
+  pdfUrl: z.string().url('Please upload a valid PDF file.').optional().or(z.literal('')),
+  pdfFile: z.any().optional(),
+}).refine((data) => data.pdfUrl, {
+  message: "PDF file is required.",
+  path: ["pdfFile"],
 });
 const LocationSchema = BaseQRFormSchema.extend({
   latitude: z.coerce.number(),
@@ -161,9 +163,12 @@ export async function generateQrCode(_prevState: QRState, formData: FormData): P
         }
         break;
       case 'pdf':
-        validatedFields = PDFSchema.safeParse(data);
+        validatedFields = PDFSchema.safeParse({
+          ...data,
+          pdfUrl: data.file || data.pdfUrl,
+        });
         if (validatedFields.success) {
-          qrContent = 'PDF File';
+          qrContent = validatedFields.data.pdfUrl || '';
           displayText = 'PDF Document';
         }
         break;

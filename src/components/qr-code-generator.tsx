@@ -9,7 +9,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { cn } from '@/lib/utils';
-import { Mail, Phone, Globe, Type, Contact, Wifi as WifiIcon, MapPin, MessageSquare, FileText, Play, Music, Upload, Menu, X, Image as ImageIcon } from 'lucide-react';
+import { Mail, Phone, Globe, Type, Contact, Wifi as WifiIcon, MapPin, MessageSquare, FileText, Play, Music, Upload, Menu, X, Image as ImageIcon, RotateCcw, Loader2 } from 'lucide-react';
 import { FileUpload } from './ui/file-upload';
 import { QRCodeDisplay } from './qr-code-display';
 
@@ -36,7 +36,7 @@ const QRForm = ({
   const [color, setColor] = useState('#000000');
 
   const renderFileUpload = () => {
-    if (type === 'image' || type === 'pdf' || type === 'video' || type === 'audio') {
+    if (['image', 'video', 'audio', 'pdf'].includes(type)) {
       return (
         <div className="mt-4">
           <FileUpload
@@ -172,11 +172,11 @@ export function QRCodeGenerator() {
           setFilePreview(reader.result as string);
         };
         reader.readAsDataURL(file);
-      } else if (file.type === 'application/pdf') {
-        setFilePreview(URL.createObjectURL(file));
       } else if (file.type.startsWith('video/')) {
         setFilePreview(URL.createObjectURL(file));
       } else if (file.type.startsWith('audio/')) {
+        setFilePreview(URL.createObjectURL(file));
+      } else if (file.type === 'application/pdf') {
         setFilePreview(URL.createObjectURL(file));
       }
       
@@ -551,28 +551,6 @@ export function QRCodeGenerator() {
                       <QRForm 
                         type="phone"
                         fileUrl={fileUrl}
-                        onFileChange={(url) => setFileUrl(url || '')}
-                      >
-                        <div className="space-y-2">
-                          <Label htmlFor="phoneNumber">Phone Number</Label>
-                          <Input
-                            id="phoneNumber"
-                            name="phone"
-                            type="tel"
-                            value={formValues['phone'] || ''}
-                            onChange={handleInputChange}
-                            placeholder="+1234567890"
-                            required
-                          />
-                        </div>
-                      </QRForm>
-                    )}
-
-                    {activeTab === 'sms' && (
-                      <QRForm 
-                        type="sms"
-                        fileUrl={fileUrl}
-                        onFileChange={(url) => setFileUrl(url || '')}
                       >
                         <div className="space-y-4">
                           <div className="space-y-2">
@@ -625,103 +603,17 @@ export function QRCodeGenerator() {
                       </QRForm>
                     )}
 
-                    {activeTab === 'pdf' && (
-                      <QRForm 
-                        type="pdf"
-                        fileUrl={fileUrl}
-                        onFileChange={(url) => setFileUrl(url || '')}
-                      >
-                        <div className="space-y-4">
-                          <div>
-                            <Label htmlFor="file-upload">Upload PDF</Label>
-                            <div className="file-upload-area">
-                              <Input
-                                id="file-upload"
-                                name="file"
-                                type="file"
-                                accept=".pdf"
-                                className="hidden"
-                                onChange={handleFileChange}
-                              />
-                              <label htmlFor="file-upload" className="cursor-pointer">
-                                <div className="flex flex-col items-center justify-center space-y-2">
-                                  <Upload className="w-8 h-8 text-muted-foreground" />
-                                  <p className="text-sm">
-                                    <span className="font-medium text-primary">Click to upload</span> or drag and drop
-                                  </p>
-                                  <p className="text-xs text-muted-foreground">
-                                    PDF file (max 10MB)
-                                  </p>
-                                </div>
-                              </label>
-                            </div>
-                          </div>
-                          {filePreview && selectedFile?.type === 'application/pdf' && (
-                            <div className="preview-container">
-                              <p className="text-sm text-muted-foreground mb-2">Preview:</p>
-                              <div className="flex items-center space-x-2">
-                                <FileText className="h-8 w-8 text-red-500" />
-                                <a 
-                                  href={filePreview} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer"
-                                  className="text-primary hover:underline"
-                                >
-                                  {selectedFile.name}
-                                </a>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </QRForm>
-                    )}
-
                     {activeTab === 'image' && (
                       <QRForm 
                         type="image"
                         fileUrl={fileUrl}
                         onFileChange={(url) => setFileUrl(url || '')}
                       >
-                        <div className="space-y-4">
-                          <div>
-                            <Label htmlFor="file-upload">Upload Image</Label>
-                            <div className="file-upload-area">
-                              <Input
-                                id="file-upload"
-                                name="file"
-                                type="file"
-                                accept="image/*"
-                                className="hidden"
-                                onChange={handleFileChange}
-                              />
-                              <label htmlFor="file-upload" className="cursor-pointer">
-                                <div className="flex flex-col items-center justify-center space-y-2">
-                                  <ImageIcon className="w-8 h-8 text-muted-foreground" />
-                                  <p className="text-sm">
-                                    <span className="font-medium text-primary">Click to upload</span> or drag and drop
-                                  </p>
-                                  <p className="text-xs text-muted-foreground">
-                                    PNG, JPG, GIF up to 10MB
-                                  </p>
-                                </div>
-                              </label>
-                            </div>
-                          </div>
-                          {filePreview && selectedFile?.type.startsWith('image/') && (
-                            <div className="preview-container">
-                              <p className="text-sm text-muted-foreground mb-2">Preview:</p>
-                              <div className="relative w-full max-w-xs mx-auto">
-                                <img 
-                                  src={filePreview} 
-                                  alt="Preview" 
-                                  className="rounded-lg border border-border max-h-64 object-contain w-full"
-                                />
-                                <p className="mt-2 text-xs text-center text-muted-foreground truncate">
-                                  {selectedFile.name}
-                                </p>
-                              </div>
-                            </div>
-                          )}
+                        <div className="space-y-2">
+                          <Label>Upload Image</Label>
+                          <p className="text-sm text-muted-foreground">
+                            Upload an image to generate a QR code (PNG, JPG, GIF, WEBP up to 4MB)
+                          </p>
                         </div>
                       </QRForm>
                     )}
@@ -732,133 +624,69 @@ export function QRCodeGenerator() {
                         fileUrl={fileUrl}
                         onFileChange={(url) => setFileUrl(url || '')}
                       >
-                        <div className="space-y-4">
-                          <div>
-                            <Label htmlFor="file-upload">Upload Video</Label>
-                            <div className="file-upload-area">
-                              <Input
-                                id="file-upload"
-                                name="file"
-                                type="file"
-                                accept="video/*"
-                                className="hidden"
-                                onChange={handleFileChange}
-                              />
-                              <label htmlFor="file-upload" className="cursor-pointer">
-                                <div className="flex flex-col items-center justify-center space-y-2">
-                                  <Play className="w-8 h-8 text-muted-foreground" />
-                                  <p className="text-sm">
-                                    <span className="font-medium text-primary">Click to upload</span> or drag and drop
-                                  </p>
-                                  <p className="text-xs text-muted-foreground">
-                                    MP4, WebM up to 50MB
-                                  </p>
-                                </div>
-                              </label>
-                            </div>
-                          </div>
-                          {filePreview && selectedFile?.type.startsWith('video/') && (
-                            <div className="preview-container">
-                              <p className="text-sm text-muted-foreground mb-2">Preview:</p>
-                              <div className="relative w-full max-w-xs mx-auto">
-                                <video 
-                                  src={filePreview} 
-                                  controls
-                                  className="rounded-lg border border-border max-h-64 w-full"
-                                />
-                                <p className="mt-2 text-xs text-center text-muted-foreground truncate">
-                                  {selectedFile.name}
-                                </p>
-                              </div>
-                            </div>
-                          )}
+                        <div className="space-y-2">
+                          <Label>Upload Video</Label>
+                          <p className="text-sm text-muted-foreground">
+                            Upload a video to generate a QR code
+                          </p>
+                        </div>
+                      </QRForm>
+                    )}
+
+                    {activeTab === 'pdf' && (
+                      <QRForm 
+                        type="pdf"
+                        fileUrl={fileUrl}
+                        onFileChange={(url) => setFileUrl(url || '')}
+                      >
+                        <div className="space-y-2">
+                          <Label>Upload PDF</Label>
+                          <p className="text-sm text-muted-foreground">
+                            Upload a PDF file to generate a QR code
+                          </p>
                         </div>
                       </QRForm>
                     )}
 
                     {activeTab === 'music' && (
                       <QRForm 
-                        type="music"
+                        type="audio"
                         fileUrl={fileUrl}
                         onFileChange={(url) => setFileUrl(url || '')}
                       >
-                        <div className="space-y-4">
-                          <div>
-                            <Label htmlFor="file-upload">Upload Music</Label>
-                            <div className="file-upload-area">
-                              <Input
-                                id="file-upload"
-                                name="file"
-                                type="file"
-                                accept="audio/*"
-                                className="hidden"
-                                onChange={handleFileChange}
-                              />
-                              <label htmlFor="file-upload" className="cursor-pointer">
-                                <div className="flex flex-col items-center justify-center space-y-2">
-                                  <Music className="w-8 h-8 text-muted-foreground" />
-                                  <p className="text-sm">
-                                    <span className="font-medium text-primary">Click to upload</span> or drag and drop
-                                  </p>
-                                  <p className="text-xs text-muted-foreground">
-                                    MP3, WAV up to 20MB
-                                  </p>
-                                </div>
-                              </label>
-                            </div>
-                          </div>
-                          {filePreview && selectedFile?.type.startsWith('audio/') && (
-                            <div className="preview-container">
-                              <p className="text-sm text-muted-foreground mb-2">Preview:</p>
-                              <div className="w-full max-w-xs mx-auto">
-                                <div className="flex items-center space-x-4 p-3 bg-muted/30 rounded-lg">
-                                  <div className="flex-shrink-0">
-                                    <Music className="h-10 w-10 text-primary" />
-                                  </div>
-                                  <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-medium truncate">
-                                      {selectedFile.name.replace(/\.[^/.]+$/, '')}
-                                    </p>
-                                    <p className="text-xs text-muted-foreground">
-                                      {selectedFile.type.split('/')[1]?.toUpperCase() || 'AUDIO'}
-                                    </p>
-                                  </div>
-                                </div>
-                                <audio 
-                                  src={filePreview} 
-                                  controls 
-                                  className="w-full mt-2"
-                                />
-                              </div>
-                            </div>
-                          )}
+                        <div className="space-y-2">
+                          <Label>Upload Music</Label>
+                          <p className="text-sm text-muted-foreground">
+                            Upload an audio file to generate a QR code (MP3, WAV, OGG, M4A up to 32MB)
+                          </p>
                         </div>
                       </QRForm>
                     )}
-                    
-                    <div className="pt-4">
-                      <SubmitButton />
-                    </div>
+
+                    <SubmitButton />
                   </form>
                 </div>
               </div>
             </div>
-
-            {/* Back of the card - QR Code */}
-          {state.message && !state.qrImageUrl && (
-              <div className="card-face card-back w-full h-full">
-                <div className="w-full h-full p-6">
-                  {state.qrImageUrl && (
-                    <QRCodeDisplay 
-                      imageUrl={state.qrImageUrl}
-                      text={state.text || 'QR Code'}
-                      className="w-full max-w-xs mx-auto"
-                      onCreateAnother={handleReset}
-                    />
-                  )}
+            
+            {/* Back of the card - QR Code Display */}
+            <div className="card-face card-back absolute inset-0 w-full h-full p-6 flex flex-col items-center justify-center bg-white rounded-lg shadow-lg" style={{ backfaceVisibility: 'hidden' }}>
+              {state.qrImageUrl ? (
+                <div className="flex flex-col items-center space-y-6 w-full">
+                  <QRCodeDisplay 
+                    imageUrl={state.qrImageUrl}
+                    text={formValues['text'] || formValues['ssid'] || formValues['phone'] || 'QR Code'}
+                    className="w-64 h-64"
+                    onCreateAnother={handleReset}
+                  />
                 </div>
-              </div>
-            )}
+              ) : (
+                <div className="flex flex-col items-center space-y-4">
+                  <Loader2 className="w-12 h-12 animate-spin text-primary" />
+                  <p className="text-muted-foreground">Generating QR Code...</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

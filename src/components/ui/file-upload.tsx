@@ -33,28 +33,36 @@ export const FileUpload = ({
     },
   });
 
-  const onDrop = useCallback(
+  const handleDrop = useCallback(
     (acceptedFiles: File[]) => {
-      setIsUploading(true);
-      startUpload(acceptedFiles);
+      if (acceptedFiles.length > 0) {
+        setIsUploading(true);
+        startUpload(acceptedFiles);
+      }
     },
     [startUpload]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop,
+    onDrop: handleDrop,
     accept: {
-      "image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp"],
-      "application/pdf": [".pdf"],
-      "video/*": [".mp4", ".webm", ".ogg"],
-    }[endpoint === "imageUploader" ? "image/*" : endpoint === "pdfUploader" ? "application/pdf" : "video/*"],
-    multiple: false,
+      'image/png': ['.png'],
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/gif': ['.gif'],
+      'image/webp': ['.webp'],
+      'application/pdf': ['.pdf'],
+      'video/mp4': ['.mp4'],
+      'video/webm': ['.webm'],
+      'video/quicktime': ['.mov'],
+    },
+    maxFiles: 1,
+    disabled: isUploading,
   });
 
   const fileType = value?.split(".").pop();
   const isImage = fileType?.match(/(jpg|jpeg|png|gif|webp)$/);
   const isPDF = fileType === "pdf";
-  const isVideo = fileType?.match(/(mp4|webm|ogg)$/);
+  const isVideo = fileType?.match(/(mp4|webm|mov|ogg)$/);
 
   if (value) {
     return (

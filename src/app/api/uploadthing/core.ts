@@ -11,10 +11,14 @@ export const ourFileRouter = {
     video: { maxFileSize: "128MB", maxFileCount: 1 },
     audio: { maxFileSize: "32MB", maxFileCount: 1 },
   })
-    .onUploadComplete(({ file }) => ({
-      ok: true,
-      url: file.ufsUrl
-    }))
+    .onUploadComplete(({ file }) => {
+      // Return the file URL in the expected format
+      return { 
+        ok: true, 
+        url: file.ufsUrl || file.url, // Fallback to file.url if ufsUrl is not available
+        ufsUrl: file.ufsUrl || file.url // Ensure ufsUrl is always set
+      };
+    })
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

@@ -11,21 +11,10 @@ export const ourFileRouter = {
     video: { maxFileSize: "128MB", maxFileCount: 1 },
     audio: { maxFileSize: "32MB", maxFileCount: 1 },
   })
-    .onUploadComplete(async ({ file }) => {
-      try {
-        console.log("UPLOAD COMPLETE:", file.ufsUrl);
-        return {
-          status: "success",
-          url: file.ufsUrl,
-        };
-      } catch (err) {
-        console.error("Upload callback error:", err);
-        return {
-          status: "error",
-          reason: "callback failed",
-        };
-      }
-    })
+    .onUploadComplete(({ file }) => ({
+      ok: true,
+      url: file.ufsUrl
+    }))
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

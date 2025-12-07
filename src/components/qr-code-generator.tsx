@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useTransition } from 'react';
 import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import type { QRState } from '@/lib/definitions';
 import { generateQrCode } from '@/lib/actions';
 import { Button } from './ui/button';

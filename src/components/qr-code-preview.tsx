@@ -11,13 +11,50 @@ export const QRCodePreview: React.FC<QRCodeDisplayProps> = ({
   className = '',
   onCreateAnother,
 }) => {
-  const handleDownload = () => {
-    const link = document.createElement('a');
-    link.href = imageUrl;
-    link.download = `qr-code-${text || 'download'}.png`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = async () => {
+    try {
+      // Create a temporary anchor element
+      const link = document.createElement('a');
+      
+      // Set the download attribute with a proper filename and extension
+      const fileName = `qr-code-${text || 'download'}.png`;
+      link.download = fileName.replace(/[^\w\d.-]/g, '_'); // Sanitize filename
+      
+      // For QR code images, we need to fetch the image first
+      if (imageUrl.includes('api.qrserver.com')) {
+        // Add a timestamp to the URL to prevent caching
+        const timestamp = new Date().getTime();
+        const urlWithTimestamp = `${imageUrl}${imageUrl.includes('?') ? '&' : '?'}t=${timestamp}`;
+        
+        // Fetch the image and create an object URL
+        const response = await fetch(urlWithTimestamp);
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        
+        // Set the href to the blob URL
+        link.href = blobUrl;
+        
+        // Trigger the download
+        document.body.appendChild(link);
+        link.click();
+        
+        // Clean up
+        setTimeout(() => {
+          document.body.removeChild(link);
+          URL.revokeObjectURL(blobUrl);
+        }, 100);
+      } else {
+        // For other types of URLs, use the standard approach
+        link.href = imageUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    } catch (error) {
+      console.error('Download failed:', error);
+      // Fallback: Open in new tab if download fails
+      window.open(imageUrl, '_blank');
+    }
   };
 
   const handleShare = async () => {

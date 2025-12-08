@@ -1,13 +1,43 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useTransition } from 'react';
 import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { generateQrCode } from '@/lib/actions';
 import { cn } from '@/lib/utils';
-import { Mail, Phone, Globe, Type, Contact, Wifi as WifiIcon, MapPin } from 'lucide-react';
-import QRForm, { SubmitButton } from './qr-code-form';
+import { 
+  Mail, 
+  Phone, 
+  Globe, 
+  Type, 
+  Contact, 
+  Wifi as WifiIcon, 
+  MapPin, 
+  MessageSquare, 
+  FileText, 
+  Image as ImageIcon, 
+  Play, 
+  Music,
+  X,
+  Menu,
+  Loader2
+} from 'lucide-react';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { FileUpload } from './ui/file-upload';
 import QRCodePreview from './qr-code-preview';
 import { QRState } from '@/types';
+
+// Type guard to check if value is a File
+const isFile = (value: unknown): value is File => {
+  return value instanceof File || 
+         (typeof value === 'object' && 
+          value !== null && 
+          'name' in value && 
+          'size' in value && 
+          'type' in value);
+};
 
 const initialState: QRState = {
   message: '',
@@ -88,7 +118,7 @@ const tabs = [
   { id: 'pdf', label: 'PDF', icon: <FileText className="w-4 h-4 mr-2" /> },
   { id: 'image', label: 'Image', icon: <ImageIcon className="w-4 h-4 mr-2" /> },
   { id: 'video', label: 'Video', icon: <Play className="w-4 h-4 mr-2" /> },
-  { id: 'music', label: 'Music', icon: <Music className="w-4 h-4 mr-2" /> },
+  { id: 'audio', label: 'Audio', icon: <Music className="w-4 h-4 mr-2" /> },
 ];
 
 function SubmitButton() {

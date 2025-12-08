@@ -218,12 +218,24 @@ export async function generateQrCode(_prevState: QRState, formData: FormData): P
         }
         break;
       default:
-        return { message: "Invalid QR code type." };
+        return { 
+          message: "Invalid QR code type.",
+          qrImageUrl: "",
+          text: "",
+          frame: "",
+          shape: "",
+          errors: {}
+        };
     }
 
     if (!validatedFields || !validatedFields.success) {
       return {
-        errors: validatedFields?.error.flatten().fieldErrors,
+        message: "Failed to generate QR code.",
+        qrImageUrl: "",
+        text: "",
+        frame: "",
+        shape: "",
+        errors: validatedFields?.error.flatten().fieldErrors || {}
       };
     }
 
@@ -233,10 +245,24 @@ export async function generateQrCode(_prevState: QRState, formData: FormData): P
     // Build QR API URL with customizations
     const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrContent)}&size=${size}x${size}&color=${colorHex}&bgcolor=F0F0F0${logoUrl ? `&logo=${encodeURIComponent(logoUrl)}` : ''}`;
 
-    return { qrImageUrl: qrApiUrl, text: displayText, message: 'QR Code generated!' };
+    return {
+      qrImageUrl: qrApiUrl,
+      text: displayText,
+      message: 'QR Code generated!',
+      frame: "",
+      shape: "",
+      errors: {}
+    };
   } catch (error) {
     console.error('Error generating QR code:', error);
-    return { message: 'An unexpected error occurred while generating the QR code.' };
+    return {
+      message: 'An unexpected error occurred while generating the QR code.',
+      qrImageUrl: "",
+      text: "",
+      frame: "",
+      shape: "",
+      errors: {}
+    };
   }
 }
 

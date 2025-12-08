@@ -33,8 +33,8 @@ A modern, responsive QR code generator built with Next.js, React, and Tailwind C
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/qr-code-generator.git
-   cd qr-code-generator
+   git clone https://github.com/yourusername/qrender.git
+   cd qrender
    ```
 
 2. Install dependencies:
@@ -89,6 +89,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 - [QR Server API](https://goqr.me/api/)
 - [Lucide Icons](https://lucide.dev/)
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

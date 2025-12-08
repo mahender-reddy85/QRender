@@ -6,20 +6,22 @@ import { Image as ImageIcon, Video, X, Music, FileText } from "lucide-react";
 import { useUploadThing } from "@/lib/uploadthing";
 import { cn } from "@/lib/utils";
 
-type FileType = 'image' | 'video' | 'audio' | 'pdf';
+type FileType = 'image' | 'video' | 'audio' | 'music' | 'pdf';
 
 const ALLOWED_FILE_TYPES: Record<FileType, string[]> = {
   image: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'],
   pdf: ['application/pdf'],
   video: ['video/mp4', 'video/webm', 'video/ogg'],
-  audio: ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/webm']
+  audio: ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/webm', 'audio/mp3', 'audio/m4a'],
+  music: ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/webm', 'audio/mp3', 'audio/m4a']
 };
 
 const FILE_TYPE_EXTENSIONS: Record<FileType, string> = {
   image: '.jpg, .jpeg, .png, .gif, .webp, .svg',
   pdf: '.pdf',
   video: '.mp4, .webm, .ogg',
-  audio: '.mp3, .wav, .ogg, .m4a'
+  audio: '.mp3, .wav, .ogg, .webm, .m4a',
+  music: '.mp3, .wav, .ogg, .webm, .m4a'
 };
 
 const MAX_FILE_SIZE = {

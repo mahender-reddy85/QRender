@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Button } from './ui/button';
-import { Download, RotateCcw } from 'lucide-react';
+import { Download, RotateCcw, Share2 } from 'lucide-react';
 import { QRCodeDisplayProps } from '@/types';
 
 export const QRCodePreview: React.FC<QRCodeDisplayProps> = ({
@@ -20,6 +20,24 @@ export const QRCodePreview: React.FC<QRCodeDisplayProps> = ({
     document.body.removeChild(link);
   };
 
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: 'QR Code',
+          text: `Check out this QR code for ${text || 'your content'}`,
+          url: imageUrl,
+        });
+      } else {
+        // Fallback for browsers that don't support Web Share API
+        await navigator.clipboard.writeText(imageUrl);
+        alert('Link copied to clipboard!');
+      }
+    } catch (error) {
+      console.error('Error sharing:', error);
+    }
+  };
+
   return (
     <div className={`flex flex-col items-center space-y-6 ${className}`}>
       <div className="relative w-64 h-64">
@@ -30,23 +48,33 @@ export const QRCodePreview: React.FC<QRCodeDisplayProps> = ({
         />
       </div>
       
-      <div className="flex flex-col sm:flex-row gap-4 w-full">
+      <div className="grid grid-cols-2 gap-3 w-full">
         <Button 
           onClick={handleDownload}
-          className="flex-1"
+          variant="outline"
+          className="flex items-center justify-center gap-2"
         >
-          <Download className="w-4 h-4 mr-2" />
-          Download
+          <Download className="w-4 h-4" />
+          <span className="hidden sm:inline">Download</span>
+        </Button>
+        
+        <Button 
+          onClick={handleShare}
+          variant="outline"
+          className="flex items-center justify-center gap-2"
+        >
+          <Share2 className="w-4 h-4" />
+          <span className="hidden sm:inline">Share</span>
         </Button>
         
         {onCreateAnother && (
           <Button 
             variant="outline" 
             onClick={onCreateAnother}
-            className="flex-1"
+            className="col-span-2 flex items-center justify-center gap-2"
           >
-            <RotateCcw className="w-4 h-4 mr-2" />
-            Create Another
+            <RotateCcw className="w-4 h-4" />
+            <span>Create Another</span>
           </Button>
         )}
       </div>

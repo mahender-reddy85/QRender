@@ -117,7 +117,7 @@ const tabs = [
   { id: 'pdf', label: 'PDF', icon: <FileText className="w-4 h-4 mr-2" /> },
   { id: 'image', label: 'Image', icon: <ImageIcon className="w-4 h-4 mr-2" /> },
   { id: 'video', label: 'Video', icon: <Play className="w-4 h-4 mr-2" /> },
-  { id: 'audio', label: 'Audio', icon: <Music className="w-4 h-4 mr-2" /> },
+  { id: 'music', label: 'Music', icon: <Music className="w-4 h-4 mr-2" /> },
 ];
 
 function SubmitButton() {
@@ -794,15 +794,20 @@ export function QRCodeGenerator() {
 
                     {activeTab === 'music' && (
                       <QRForm 
-                        type="audio"
+                        type="music"
                         fileUrl={fileUrl}
                         onFileChange={handleFileUpload}
                       >
                         <div className="space-y-2">
                           <Label>Upload Music</Label>
-                          <p className="text-sm text-muted-foreground">
-                            Upload an audio file to generate a QR code (MP3, WAV, OGG, M4A up to 32MB)
+                          <p className="text-sm text-muted-foreground mb-4">
+                            Upload a music file to generate a QR code (MP3, WAV, OGG, M4A up to 32MB)
                           </p>
+                          <FileUpload
+                            value={fileUrl}
+                            onChange={(url) => setFileUrl(url || '')}
+                            fileType="music"
+                          />
                         </div>
                       </QRForm>
                     )}

@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect, useTransition } from 'react';
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
+import { QRCodePreview } from './qr-code-preview';
 import { generateQrCode } from '@/lib/actions';
 import { cn } from '@/lib/utils';
 import { 
@@ -818,7 +819,7 @@ export function QRCodeGenerator() {
             <div className="card-face card-back absolute inset-0 w-full h-full p-6 flex flex-col items-center justify-center bg-white rounded-lg shadow-lg" style={{ backfaceVisibility: 'hidden' }}>
               {state.qrImageUrl ? (
                 <div className="flex flex-col items-center space-y-6 w-full">
-                  <QRCodeDisplay 
+                  <QRCodePreview 
                     imageUrl={state.qrImageUrl}
                     text={String(formValues['text'] || formValues['ssid'] || formValues['phone'] || 'QR Code')}
                     className="w-64 h-64"

@@ -48,20 +48,30 @@ export const FileUpload: React.FC<FileUploadProps> = ({
   const [error, setError] = useState<string | null>(null);
 
   const { startUpload } = useUploadThing("fileUploader" as any, {
-    onClientUploadComplete: (res: { ufsUrl: string }[]) => {
-      if (res && res[0]?.ufsUrl) {
-        onChange(res[0].ufsUrl);
+    onClientUploadComplete: (res: { url: string }[]) => {
+      if (res && res[0]?.url) {
+        onChange(res[0].url);
         setError(null);
         if (onError) onError('');
+      } else {
+        const errorMsg = 'Upload completed but no URL was returned';
+        setError(errorMsg);
+        if (onError) onError(errorMsg);
       }
       setIsUploading(false);
     },
     onUploadError: (error: Error) => {
       console.error('Upload error:', error);
-      const errorMsg = `Upload failed: ${error.message}`;
+      const errorMsg = error.message.includes('Failed to fetch') 
+        ? 'Upload failed: Network error. Please check your connection.'
+        : `Upload failed: ${error.message}`;
       setError(errorMsg);
       if (onError) onError(errorMsg);
       setIsUploading(false);
+    },
+    onUploadBegin: () => {
+      setError(null);
+      setIsUploading(true);
     }
   });
 

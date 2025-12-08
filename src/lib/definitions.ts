@@ -12,12 +12,12 @@ export type QRCodeData = {
 };
 
 export type QRState = {
-  message?: string;
-  qrImageUrl?: string;
-  text?: string;
-  frame?: string;
-  shape?: string;
-  errors?: {
+  message: string;
+  qrImageUrl: string;
+  text: string;
+  frame: string;
+  shape: string;
+  errors: {
     text?: string[];
     color?: string[];
     size?: string[];

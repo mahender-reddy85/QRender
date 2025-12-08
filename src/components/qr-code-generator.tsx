@@ -1,9 +1,7 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useTransition } from 'react';
-import { useActionState } from 'react';
+import React, { useState, useRef, useEffect, useTransition, useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { QRCodePreview } from './qr-code-preview';
 import { generateQrCode } from '@/lib/actions';
 import { cn } from '@/lib/utils';
 import { 

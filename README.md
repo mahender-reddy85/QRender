@@ -44,21 +44,14 @@ A modern, responsive QR code generator built with Next.js, React, and Tailwind C
    yarn install
    ```
 
-3. Create a `.env.local` file in the root directory and add your environment variables:
-   ```env
-   # For file uploads (if implemented)
-   NEXT_PUBLIC_UPLOAD_PRESET=your_cloudinary_upload_preset
-   NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-   ```
-
-4. Run the development server:
+3. Run the development server:
    ```bash
    npm run dev
    # or
    yarn dev
    ```
 
-5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:9002](http://localhost:9002) with your browser to see the result.
 
 ## Usage
 

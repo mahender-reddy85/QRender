@@ -1,22 +1,16 @@
 'use client';
 
-import { Suspense } from 'react';
 import { ThemeToggle } from "@/components/theme-toggle";
 import { GradientText } from "@/components/ui/gradient-text";
 import dynamic from 'next/dynamic';
 
-// Create a client component that will be rendered on the client
-function QRCodeGeneratorClient() {
-  const QRCodeGenerator = dynamic<{}>(
-    () => import('@/components/qr-code-generator').then(mod => mod.QRCodeGenerator),
-    { 
-      ssr: false, 
-      loading: () => <div>Loading QR Code Generator...</div> 
-    }
-  );
-
-  return <QRCodeGenerator />;
-}
+const QRCodeGenerator = dynamic(
+  () => import('@/components/qr-code-generator').then(mod => mod.QRCodeGenerator),
+  {
+    ssr: false,
+    loading: () => <div>Loading QR Code Generator...</div>
+  }
+);
 
 export default function HomePage() {
   return (
@@ -25,7 +19,7 @@ export default function HomePage() {
         <ThemeToggle />
       </div>
       <section className="relative text-center mb-8">
-        <GradientText 
+        <GradientText
           colors={["#40ffaa", "#4079ff", "#40ffaa", "#4079ff", "#40ffaa"]}
           animationSpeed={3}
           showBorder={false}
@@ -38,9 +32,7 @@ export default function HomePage() {
         </p>
       </section>
 
-      <Suspense fallback={<div>Loading QR Code Generator...</div>}>
-        <QRCodeGeneratorClient />
-      </Suspense>
+      <QRCodeGenerator />
     </main>
   );
 }

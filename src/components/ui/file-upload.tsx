@@ -31,6 +31,14 @@ const MAX_FILE_SIZE = {
   audio: 32 * 1024 * 1024
 };
 
+interface FileUploadProps {
+  onChange: (url: string) => void;
+  value: string;
+  onError?: (error: string) => void;
+  fileType?: FileType;
+  className?: string;
+}
+
 export const FileUpload: React.FC<FileUploadProps> = ({
   onChange,
   onError,

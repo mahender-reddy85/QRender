@@ -3,9 +3,9 @@
 import { z } from 'zod';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import type { QRCodeData } from './definitions';
+import type { QRState } from '@/types';
 
-// --- QR Code Actions ---
+
 
 const BaseQRFormSchema = z.object({
   type: z.string(),
@@ -24,7 +24,7 @@ const EmailSchema = BaseQRFormSchema.extend({
   to: z.string().email(),
   subject: z.string().optional(),
   body: z.string().optional(),
-  email: z.string().email().optional(), // Add missing email field
+  email: z.string().email().optional(),
 });
 const PhoneSchema = BaseQRFormSchema.extend({
   phone: z.string().min(1, 'Phone number cannot be empty.'),
@@ -32,14 +32,14 @@ const PhoneSchema = BaseQRFormSchema.extend({
 const SMSSchema = BaseQRFormSchema.extend({
   phone: z.string().min(1, 'Phone number cannot be empty.'),
   message: z.string().optional(),
-  sms: z.string().optional(), // Add missing sms field
+  sms: z.string().optional(),
 });
 const VCardSchema = BaseQRFormSchema.extend({
   firstName: z.string().min(1, 'First name is required.'),
   lastName: z.string().min(1, 'Last name is required.'),
   phone: z.string().min(1, 'Phone number is required.'),
   email: z.union([
-    z.string().length(0), // Allow empty string
+    z.string().length(0),
     z.string().email('Invalid email for vCard.')
   ]).optional().transform(e => e === "" ? undefined : e),
   organization: z.string().optional(),
@@ -159,7 +159,7 @@ export async function generateQrCode(_prevState: QRState, formData: FormData): P
         validatedFields = WifiSchema.safeParse(data);
         if (validatedFields.success) {
           const w = validatedFields.data;
-          // Use security as encryption if encryption is not provided
+
           const encryption = w.encryption || w.security || 'WPA';
           qrContent = `WIFI:T:${encryption};S:${w.ssid};P:${w.password || ''};;`;
           displayText = w.ssid;
@@ -240,9 +240,9 @@ export async function generateQrCode(_prevState: QRState, formData: FormData): P
     }
 
     const { color, size, logoUrl } = validatedFields.data;
-    const colorHex = color.substring(1); // Remove '#'
+    const colorHex = color.substring(1);
 
-    // Build QR API URL with customizations
+
     const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrContent)}&size=${size}x${size}&color=${colorHex}&bgcolor=F0F0F0${logoUrl ? `&logo=${encodeURIComponent(logoUrl)}` : ''}`;
 
     return {

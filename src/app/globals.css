@@ -79,20 +79,15 @@
   height: 100%;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  @apply bg-card text-card-foreground;
-  border-radius: var(--radius);
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
 }
 .card-front {
   z-index: 10;
 }
 .card-back {
   transform: rotateY(180deg);
-  background: hsl(var(--card));
   display: flex;
   justify-content: center;
   align-items: center;
-  @apply border border-border;
 }
 
 /* Form elements */

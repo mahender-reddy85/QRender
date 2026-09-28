@@ -28,7 +28,6 @@ import { FileUpload } from './ui/file-upload';
 import QRCodePreview from './qr-code-preview';
 import { QRState } from '@/types';
 
-// Type guard to check if value is a File
 const isFile = (value: unknown): value is File => {
   return value instanceof File || 
          (typeof value === 'object' && 
@@ -121,7 +120,6 @@ const tabs = [
 ];
 
 function SubmitButton() {
-  // @ts-ignore - useFormStatus is not in the React types yet
   const { pending } = useFormStatus();
   return (
     <Button type="submit" disabled={pending} className="w-full">
@@ -135,7 +133,6 @@ export function QRCodeGenerator() {
   const [isFlipped, setIsFlipped] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
-  // Update the type to allow File objects in form values
   type FormValue = string | File | undefined;
   const [formValues, setFormValues] = useState<Record<string, FormValue>>({});
   const [fileUrl, setFileUrl] = useState<string | undefined>();
@@ -147,16 +144,13 @@ export function QRCodeGenerator() {
     generateQrCode,
     initialState
   );
-  // Form action that handles the submission with transition
   const handleFormAction = (formData: FormData) => {
     return startTransition(async () => {
       formData.append('type', activeTab);
-      
-      // Add the file URL if it exists (from FileUpload component)
+
       if (fileUrl) {
         formData.append('url', fileUrl);
-        
-        // Set the appropriate field based on the active tab
+
         if (activeTab === 'pdf') {
           formData.append('pdfUrl', fileUrl);
         } else if (activeTab === 'image') {
@@ -167,17 +161,14 @@ export function QRCodeGenerator() {
           formData.append('musicUrl', fileUrl);
         }
       }
-      
-      // Add the file directly if it was uploaded via file input
+
       if (selectedFile) {
         formData.append('file', selectedFile);
         formData.append('filename', selectedFile.name);
       }
 
-      // Add all form values to formData
       Object.entries(formValues).forEach(([key, value]) => {
         if (value !== undefined && value !== null && value !== '') {
-          // Skip file objects as they're already handled
           if (!isFile(value)) {
             formData.set(key, String(value));
           }
@@ -187,13 +178,11 @@ export function QRCodeGenerator() {
       return await formAction(formData);
     });
   };
-  
-  // Update local state when form state changes and reset form on successful submission
+
   useEffect(() => {
     if (state.qrImageUrl) {
       setIsFlipped(true);
-      
-      // Reset form after successful submission
+
       setFormValues({});
       setFileUrl(undefined);
       setSelectedFile(null);
@@ -201,7 +190,6 @@ export function QRCodeGenerator() {
         URL.revokeObjectURL(filePreview);
         setFilePreview(null);
       }
-      // Reset the form element
       if (formRef.current) {
         formRef.current.reset();
       }
@@ -216,54 +204,49 @@ export function QRCodeGenerator() {
     } as Record<string, FormValue>));
   };
 
-  // Helper function to safely get string values from form values
   const getStringValue = (key: string, defaultValue: string = ''): string => {
     const value = formValues[key];
     if (value === undefined || value === null) return defaultValue;
-    return String(value); // Convert to string for any non-undefined, non-null value
+    return String(value);
   };
 
   const handleFileUpload = async (url?: string) => {
     if (!url) return;
     setFileUrl(url);
-    
-    // Set the appropriate form value based on the active tab
+
     let formValuesUpdate = {};
-    
+
     if (activeTab === 'pdf') {
       formValuesUpdate = {
         pdfUrl: url,
-        text: url // Also set as text for backward compatibility
+        text: url
       };
     } else if (activeTab === 'image') {
       formValuesUpdate = {
         imageUrl: url,
-        text: url // Also set as text for backward compatibility
+        text: url
       };
     } else if (activeTab === 'video') {
       formValuesUpdate = {
         videoUrl: url,
-        text: url // Also set as text for backward compatibility
+        text: url
       };
     } else if (activeTab === 'music') {
       formValuesUpdate = {
         musicUrl: url,
-        text: url // Also set as text for backward compatibility
+        text: url
       };
     }
-    
-    // Update the form values with proper typing
+
     setFormValues(prev => ({
       ...prev,
       ...(formValuesUpdate as Record<string, string>)
     } as Record<string, FormValue>));
-    
-    // Create a new form data object
+
     const formData = new FormData();
     formData.append('type', activeTab);
     formData.append('url', url);
-    
-    // Add the appropriate field based on the active tab
+
     if (activeTab === 'pdf') {
       formData.append('pdfUrl', url);
     } else if (activeTab === 'image') {
@@ -274,15 +257,15 @@ export function QRCodeGenerator() {
       formData.append('musicUrl', url);
     }
     
-    // Add color to form data
+
     if (formValues.color) {
       formData.append('color', formValues.color);
     }
     
-    // Submit the form
+
     try {
       await formAction(formData);
-      // The QR code will be shown automatically when state.qrImageUrl updates
+
     } catch (error) {
       console.error('Error generating QR code:', error);
     }
@@ -293,12 +276,12 @@ export function QRCodeGenerator() {
       const file = e.target.files[0];
       setSelectedFile(file);
       
-      // Clean up previous preview if it exists
+
       if (filePreview) {
         URL.revokeObjectURL(filePreview);
       }
       
-      // Create preview for images
+
       if (file.type.startsWith('image/')) {
         const previewUrl = URL.createObjectURL(file);
         setFilePreview(previewUrl);
@@ -306,7 +289,7 @@ export function QRCodeGenerator() {
         setFilePreview(null);
       }
       
-      // For direct file uploads (not using FileUpload component)
+
       const { name } = e.target;
       setFormValues(prev => ({
         ...prev,
@@ -316,7 +299,7 @@ export function QRCodeGenerator() {
     }
   };
   
-  // Clean up object URLs to avoid memory leaks
+
   useEffect(() => {
     return () => {
       if (filePreview) {
@@ -325,7 +308,7 @@ export function QRCodeGenerator() {
     };
   }, [filePreview]);
 
-  // Clean up when component unmounts or tab changes
+
   useEffect(() => {
     return () => {
       if (filePreview) {
@@ -336,7 +319,7 @@ export function QRCodeGenerator() {
     };
   }, [activeTab]);
 
-  // Clean up when component unmounts
+
   useEffect(() => {
     return () => {
       if (filePreview) {
@@ -349,11 +332,11 @@ export function QRCodeGenerator() {
     setIsFlipped(false);
     setSelectedFile(null);
     setFilePreview(null);
-    // Reset form if it exists
+
     if (formRef.current) {
       formRef.current.reset();
     }
-    // Clear file input if it exists
+
     const fileInput = formRef.current?.querySelector('input[type="file"]') as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
@@ -363,7 +346,7 @@ export function QRCodeGenerator() {
   const handleTabChange = (value: string) => {
     setActiveTab(value);
     setFormValues({});
-    // Clear file input when changing tabs
+
     const fileInput = formRef.current?.querySelector('input[type="file"]') as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
@@ -383,10 +366,10 @@ export function QRCodeGenerator() {
             width: '100%',
             minHeight: '80vh'
           }}>
-            {/* Front of the card - The Form */}
+            
             <div className="card-face card-front w-full p-6">
               <div className="flex flex-col gap-6">
-                {/* Mobile Menu Button */}
+                
                 <div className="sm:hidden mb-4">
                   <Button
                     type="button"
@@ -402,7 +385,7 @@ export function QRCodeGenerator() {
                     )}
                   </Button>
                   
-                  {/* Mobile Menu Dropdown */}
+                  
                   {isMobileMenuOpen && (
                     <div className="mt-2 space-y-1 bg-card border rounded-md p-2">
                       {tabs.map((tab) => (
@@ -433,7 +416,7 @@ export function QRCodeGenerator() {
                   )}
                 </div>
 
-                {/* Desktop Tabs */}
+                
                 <div className="hidden sm:block w-full overflow-x-auto pb-2">
                   <div className="flex space-x-1">
                     {tabs.map((tab) => (
@@ -460,8 +443,8 @@ export function QRCodeGenerator() {
                   </div>
                 </div>
 
-                {/* Form Content */}
-                <div className="bg-card p-6 rounded-lg border w-full">
+                
+                <div className="w-full">
                   <form action={handleFormAction} ref={formRef} className="space-y-6">
                     {activeTab === 'website' && (
                       <QRForm 
@@ -818,8 +801,8 @@ export function QRCodeGenerator() {
               </div>
             </div>
             
-            {/* Back of the card - QR Code Display */}
-            <div className="card-face card-back absolute inset-0 w-full h-full p-6 flex flex-col items-center justify-center bg-white rounded-lg shadow-lg" style={{ backfaceVisibility: 'hidden' }}>
+            
+            <div className="card-face card-back absolute inset-0 w-full h-full p-6 flex flex-col items-center justify-center" style={{ backfaceVisibility: 'hidden' }}>
               {state.qrImageUrl ? (
                 <div className="flex flex-col items-center space-y-6 w-full">
                   <QRCodePreview 

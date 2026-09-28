@@ -25,18 +25,10 @@ const FILE_TYPE_EXTENSIONS: Record<FileType, string> = {
 };
 
 const MAX_FILE_SIZE = {
-  image: 4 * 1024 * 1024, // 4MB
-  pdf: 4 * 1024 * 1024,   // 4MB
-  video: 128 * 1024 * 1024, // 128MB
-  audio: 32 * 1024 * 1024  // 32MB
-};
-
-type FileUploadProps = {
-  onChange: (url: string) => void;
-  onError?: (error: string) => void;
-  value?: string;
-  fileType?: FileType;
-  className?: string;
+  image: 4 * 1024 * 1024,
+  pdf: 4 * 1024 * 1024,
+  video: 128 * 1024 * 1024,
+  audio: 32 * 1024 * 1024
 };
 
 export const FileUpload: React.FC<FileUploadProps> = ({
@@ -79,7 +71,6 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
   const handleDrop = useCallback(
     async (acceptedFiles: File[], fileRejections: FileRejection[]) => {
-      // Handle file rejections (invalid type, size, etc.)
       if (fileRejections.length > 0) {
         const rejection = fileRejections[0];
         if (rejection.errors[0].code === 'file-invalid-type' || rejection.errors[0].code === 'file-type-invalid') {
@@ -99,7 +90,6 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
       const file = acceptedFiles[0];
 
-      // Additional validation (in case the dropzone config is bypassed)
       if (!ALLOWED_FILE_TYPES[fileType].includes(file.type)) {
         const errorMsg = `Invalid file type. Please upload a ${fileType.toUpperCase()} file (${FILE_TYPE_EXTENSIONS[fileType]})`;
         setError(errorMsg);
@@ -157,7 +147,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: handleDrop,
-    accept: accept as any, // Type assertion needed for react-dropzone
+    accept: accept as any,
     disabled: isUploading,
     multiple: false,
     maxSize: MAX_FILE_SIZE[fileType],

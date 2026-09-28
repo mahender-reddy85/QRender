@@ -17,32 +17,24 @@ export type QRState = {
     lastName?: string[];
     organization?: string[];
     title?: string[];
-    workPhone?: string[];
-    homePhone?: string[];
-    url?: string[];
-    street?: string[];
-    city?: string[];
-    state?: string[];
-    zipCode?: string[];
-    country?: string[];
-    note?: string[];
+    website?: string[];
+    address?: string[];
     ssid?: string[];
     password?: string[];
-    security?: string[];
-    hidden?: string[];
-    amount?: string[];
-    currency?: string[];
+    encryption?: string[];
+    pdfFile?: string[];
+    latitude?: string[];
+    longitude?: string[];
+    videoUrl?: string[];
+    musicUrl?: string[];
+    videoFile?: string[];
+    musicFile?: string[];
+    imageUrl?: string[];
+    imageFile?: string[];
+    logoUrl?: string[];
     frame?: string[];
     shape?: string[];
   };
-};
-
-export type FileUploadProps = {
-  onChange: (url: string) => void;
-  onError?: (error: string) => void;
-  value?: string;
-  fileType?: 'image' | 'video' | 'audio' | 'pdf';
-  className?: string;
 };
 
 export type QRCodeDisplayProps = {
@@ -50,11 +42,4 @@ export type QRCodeDisplayProps = {
   text: string;
   className?: string;
   onCreateAnother?: () => void;
-};
-
-export type QRFormProps = {
-  type: string;
-  children?: React.ReactNode;
-  fileUrl?: string;
-  onFileChange?: (url?: string) => void;
 };

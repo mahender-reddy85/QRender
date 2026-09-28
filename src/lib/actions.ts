@@ -88,7 +88,7 @@ const ImageSchema = BaseQRFormSchema.extend({
   path: ["imageUrl"],
 });
 
-import { QRState } from './definitions';
+
 
 export async function generateQrCode(_prevState: QRState, formData: FormData): Promise<QRState> {
   try {

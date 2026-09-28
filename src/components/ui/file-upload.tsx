@@ -33,7 +33,7 @@ const MAX_FILE_SIZE = {
 
 interface FileUploadProps {
   onChange: (url: string) => void;
-  value: string;
+  value?: string;
   onError?: (error: string) => void;
   fileType?: FileType;
   className?: string;
